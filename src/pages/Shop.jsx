@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Filter, SlidersHorizontal } from 'lucide-react';
-import { products } from '../data/products';
+import { products as staticProducts } from '../data/products';
+import { db } from '../config/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 import { categoryConfig } from '../utils/categoryConfig';
 import ProductCard from '../components/shop/ProductCard';
 import FilterSidebar from '../components/shop/FilterSidebar';
@@ -23,9 +25,22 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      let result = [...products];
+    const loadProducts = async () => {
+      setLoading(true);
+      let sourceProducts = staticProducts;
+
+      try {
+        if (db) {
+          const snapshot = await getDocs(collection(db, 'products'));
+          if (!snapshot.empty) {
+            sourceProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load products from Firebase, falling back to local.', err);
+      }
+
+      let result = [...sourceProducts];
       if (category) {
         result = result.filter(p => p.category === category);
       }
@@ -44,7 +59,9 @@ export default function Shop() {
       }
       setFiltered(result);
       setLoading(false);
-    }, 300);
+    };
+
+    loadProducts();
   }, [category, sort]);
 
   const cfg = categoryConfig[category];

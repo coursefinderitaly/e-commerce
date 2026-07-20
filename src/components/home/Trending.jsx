@@ -1,14 +1,35 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { products } from '../../data/products';
+import { products as staticProducts } from '../../data/products';
+import { db } from '../../config/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 import ProductCard from '../shop/ProductCard';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 
 export default function Trending() {
   const scrollRef = useRef(null);
   const { ref, isVisible } = useScrollReveal();
-  const trending = products.filter(p => p.featured);
+  const [trending, setTrending] = useState([]);
+
+  useEffect(() => {
+    const fetchTrending = async () => {
+      try {
+        if (db) {
+          const snapshot = await getDocs(collection(db, 'products'));
+          if (!snapshot.empty) {
+            const dbProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            setTrending(dbProducts.filter(p => p.featured));
+            return;
+          }
+        }
+      } catch (e) {
+        console.error("Error fetching trending products:", e);
+      }
+      setTrending(staticProducts.filter(p => p.featured));
+    };
+    fetchTrending();
+  }, []);
 
   const scroll = (direction) => {
     if (scrollRef.current) {
