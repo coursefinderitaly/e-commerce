@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ChevronDown, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../ui/Button';
+import { products } from '../../data/products';
 
 function PigmentBloom({ color, delay, x, y, size }) {
   return (
@@ -22,6 +23,7 @@ function PigmentBloom({ color, delay, x, y, size }) {
 
 export default function Hero() {
   const heroRef = useRef(null);
+  const mobilePreviewProducts = products.filter(p => p.featured).slice(0, 4);
 
   return (
     <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-transparent">
@@ -77,6 +79,24 @@ export default function Hero() {
                 Explore Collections
               </Button>
             </Link>
+          </motion.div>
+
+          {/* Mobile Only: Product Preview */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1 }}
+            className="flex md:hidden overflow-x-auto w-full gap-4 snap-x snap-mandatory mt-10 pb-4 no-scrollbar"
+          >
+            {mobilePreviewProducts.map((p) => (
+              <Link key={p.id} to="/shop" className="snap-center shrink-0 w-[140px] h-[180px] relative rounded-2xl overflow-hidden group shadow-xl">
+                <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-3">
+                  <p className="text-white font-display text-sm leading-tight line-clamp-2 mb-1 drop-shadow-md">{p.name}</p>
+                  <p className="text-white/90 font-body text-xs drop-shadow-md">${p.price.toFixed(2)}</p>
+                </div>
+              </Link>
+            ))}
           </motion.div>
         </div>
 
