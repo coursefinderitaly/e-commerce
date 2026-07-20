@@ -12,12 +12,7 @@ import ProductForm from '../../components/admin/ProductForm';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
 
-const statsData = [
-  { label: 'Total Products', value: '12', icon: Package, color: '#3E4C6D' },
-  { label: 'Total Orders', value: '1,247', icon: ShoppingBag, color: '#B2502B' },
-  { label: 'Revenue', value: '$48,290', icon: DollarSign, color: '#79876B' },
-  { label: 'Growth', value: '+23.5%', icon: TrendingUp, color: '#8A3F56' },
-];
+
 
 export default function AdminDashboard() {
   const { user, logout, isAdmin } = useAuth();
@@ -27,6 +22,13 @@ export default function AdminDashboard() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  const statsData = [
+    { label: 'Total Products', value: products.length.toString(), icon: Package, color: '#3E4C6D' },
+    { label: 'Total Orders', value: '0', icon: ShoppingBag, color: '#B2502B' },
+    { label: 'Revenue', value: '$0.00', icon: DollarSign, color: '#79876B' },
+    { label: 'Growth', value: '0.0%', icon: TrendingUp, color: '#8A3F56' },
+  ];
 
   useEffect(() => {
     if (!isAdmin) {
