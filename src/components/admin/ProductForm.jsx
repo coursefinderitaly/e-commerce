@@ -43,6 +43,22 @@ export default function ProductForm({ product, onSubmit, onClose }) {
     setForm(f => ({ ...f, images: f.images.filter((_, i) => i !== index) }));
   };
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm(f => ({ 
+          ...f, 
+          images: f.images[0] === '' && f.images.length === 1 
+            ? [reader.result] 
+            : [...f.images.filter(img => img !== ''), reader.result] 
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({
@@ -115,26 +131,35 @@ export default function ProductForm({ product, onSubmit, onClose }) {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-paper/80 font-body">Product Images (URLs)</label>
+            <label className="block text-sm font-medium text-paper/80 font-body">Product Images</label>
             {form.images.map((url, i) => (
-              <div key={i} className="flex gap-2">
+              <div key={i} className="flex gap-2 items-center">
+                {url && (
+                  <img src={url} alt="" className="w-10 h-10 object-cover rounded-md border border-paper/10 shrink-0" />
+                )}
                 <input
-                  type="url"
+                  type="text"
                   value={url}
                   onChange={(e) => updateImage(i, e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                  className="flex-1 px-4 py-2.5 bg-transparent border border-paper/20 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-paper/20 focus:border-paper/20"
+                  placeholder="https://example.com/image.jpg OR Upload below"
+                  className="flex-1 px-4 py-2.5 min-w-0 bg-transparent border border-paper/20 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-paper/20 focus:border-paper/20"
                 />
                 {form.images.length > 1 && (
-                  <button type="button" onClick={() => removeImage(i)} className="p-2.5 text-paper/30 hover:text-red-500">
+                  <button type="button" onClick={() => removeImage(i)} className="p-2.5 text-paper/30 hover:text-red-500 shrink-0">
                     <X size={18} />
                   </button>
                 )}
               </div>
             ))}
-            <button type="button" onClick={addImage} className="flex items-center gap-2 text-sm font-body text-paper/50 hover:text-paper transition-colors">
-              <Upload size={16} /> Add another image
-            </button>
+            <div className="flex items-center gap-6 pt-2">
+              <button type="button" onClick={addImage} className="flex items-center gap-2 text-sm font-body text-paper/50 hover:text-paper transition-colors">
+                <Upload size={16} /> Add URL Link
+              </button>
+              <label className="flex items-center gap-2 text-sm font-body text-paper/50 hover:text-paper transition-colors cursor-pointer">
+                <Upload size={16} /> Upload Local Image
+                <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
+              </label>
+            </div>
           </div>
 
           <div className="flex gap-3 pt-4 border-t border-paper/10">
