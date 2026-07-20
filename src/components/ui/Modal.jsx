@@ -27,7 +27,7 @@ export default function Modal({ isOpen, onClose, title, children }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-transparent rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            className="bg-ink/95 backdrop-blur-2xl border border-paper/10 rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b border-paper/10">
