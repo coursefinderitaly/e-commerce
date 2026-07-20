@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Package, ShoppingBag, DollarSign, TrendingUp, Plus } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { products as initialProducts, categories } from '../../data/products';
+import { categories } from '../../data/products';
+import { db } from '../../config/firebase';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { formatCurrency } from '../../utils/formatCurrency';
 import Sidebar from '../../components/admin/Sidebar';
 import StatCard from '../../components/admin/StatCard';
@@ -18,10 +20,11 @@ export default function AdminDashboard() {
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const statsData = [
     { label: 'Total Products', value: products.length.toString(), icon: Package, color: '#3E4C6D' },
@@ -36,6 +39,25 @@ export default function AdminDashboard() {
     }
   }, [isAdmin, navigate]);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        if (!db) return setIsLoading(false);
+        const querySnapshot = await getDocs(collection(db, 'products'));
+        const productsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setProducts(productsList);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    if (isAdmin) {
+      fetchProducts();
+    }
+  }, [isAdmin]);
+
   if (!isAdmin) {
     return null;
   }
@@ -45,14 +67,28 @@ export default function AdminDashboard() {
     navigate('/admin/login');
   };
 
-  const handleSaveProduct = (product) => {
-    if (editingProduct) {
-      setProducts(products.map(p => p.id === product.id ? product : p));
-    } else {
-      setProducts([...products, product]);
+  const handleSaveProduct = async (productData) => {
+    try {
+      if (editingProduct) {
+        // Update existing product
+        const { id, ...updateData } = productData;
+        if (db) await updateDoc(doc(db, 'products', id), updateData);
+        setProducts(products.map(p => p.id === productData.id ? productData : p));
+      } else {
+        // Add new product
+        const { id, ...newData } = productData;
+        if (db) {
+          const docRef = await addDoc(collection(db, 'products'), newData);
+          setProducts([...products, { ...newData, id: docRef.id }]);
+        } else {
+          setProducts([...products, productData]); // fallback if no DB
+        }
+      }
+      setShowForm(false);
+      setEditingProduct(null);
+    } catch (error) {
+      console.error("Error saving product:", error);
     }
-    setShowForm(false);
-    setEditingProduct(null);
   };
 
   const handleEdit = (product) => {
@@ -64,9 +100,16 @@ export default function AdminDashboard() {
     setDeleteConfirm(product);
   };
 
-  const confirmDelete = () => {
-    setProducts(products.filter(p => p.id !== deleteConfirm.id));
-    setDeleteConfirm(null);
+  const confirmDelete = async () => {
+    try {
+      if (deleteConfirm && db) {
+        await deleteDoc(doc(db, 'products', deleteConfirm.id));
+      }
+      setProducts(products.filter(p => p.id !== deleteConfirm.id));
+      setDeleteConfirm(null);
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
 
   const handleAddNew = () => {
@@ -125,17 +168,21 @@ export default function AdminDashboard() {
                 exit={{ opacity: 0, y: -10 }}
               >
                 <div className="flex items-center justify-between mb-6">
-                  <p className="font-body text-sm text-paper/50">{products.length} products</p>
+                  <p className="font-body text-sm text-paper/50">
+                    {isLoading ? 'Loading products...' : `${products.length} products`}
+                  </p>
                   <Button variant="primary" size="sm" onClick={handleAddNew}>
                     <Plus size={16} /> Add Product
                   </Button>
                 </div>
-                <ProductTable
-                  products={products}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  categories={categories}
-                />
+                {!isLoading && (
+                  <ProductTable
+                    products={products}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    categories={categories}
+                  />
+                )}
               </motion.div>
             )}
 
