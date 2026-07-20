@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Package, ShoppingBag, DollarSign, TrendingUp, Plus } from 'lucide-react';
@@ -28,8 +28,13 @@ export default function AdminDashboard() {
   const [showForm, setShowForm] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate('/admin/login', { replace: true });
+    }
+  }, [isAdmin, navigate]);
+
   if (!isAdmin) {
-    navigate('/admin/login');
     return null;
   }
 

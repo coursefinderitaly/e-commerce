@@ -2,8 +2,8 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
-const ADMIN_EMAIL = 'admin@examples.com';
-const ADMIN_PASSWORD = 'Admin@123';
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);

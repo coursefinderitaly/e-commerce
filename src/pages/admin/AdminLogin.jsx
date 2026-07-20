@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, Eye, EyeOff } from 'lucide-react';
@@ -14,8 +14,13 @@ export default function AdminLogin() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    if (user) {
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
+
   if (user) {
-    navigate('/admin/dashboard');
     return null;
   }
 
@@ -86,9 +91,6 @@ export default function AdminLogin() {
             </Button>
           </form>
 
-          <p className="text-center text-xs text-paper/30 mt-6 font-body">
-            Demo: admin@examples.com / Admin@123
-          </p>
         </div>
       </motion.div>
     </div>
