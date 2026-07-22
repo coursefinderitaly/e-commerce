@@ -72,7 +72,7 @@ export default function AdminDashboard() {
   const handleSaveProduct = (productData) => {
     let updatedList;
     if (editingProduct) {
-      updatedList = products.map(p => p.id === productData.id ? productData : p);
+      updatedList = products.map(p => String(p.id) === String(productData.id) ? productData : p);
     } else {
       updatedList = [...products, productData];
     }

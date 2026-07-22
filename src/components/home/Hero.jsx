@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ChevronDown, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../ui/Button';
-import { products } from '../../data/products';
+import { getProducts } from '../../utils/getProducts';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 import OptimizedImage from '../ui/OptimizedImage';
@@ -26,6 +26,7 @@ function PigmentBloom({ color, delay, x, y, size }) {
 
 export default function Hero() {
   const heroRef = useRef(null);
+  const products = getProducts();
   const mobilePreviewProducts = products.filter(p => p.featured).slice(0, 4);
 
   return (

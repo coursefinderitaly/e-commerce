@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Filter, SlidersHorizontal } from 'lucide-react';
-import { products as staticProducts } from '../data/products';
+import { getProducts } from '../utils/getProducts';
 import { categoryConfig } from '../utils/categoryConfig';
 import ProductCard from '../components/shop/ProductCard';
 import FilterSidebar from '../components/shop/FilterSidebar';
@@ -25,19 +25,7 @@ export default function Shop() {
   useEffect(() => {
     const loadProducts = () => {
       setLoading(true);
-      let sourceProducts = staticProducts;
-
-      try {
-        const saved = localStorage.getItem('glam_aura_products');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            sourceProducts = parsed;
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load local saved products.', err);
-      }
+      const sourceProducts = getProducts();
 
       let result = [...sourceProducts];
       if (category) {

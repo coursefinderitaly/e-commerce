@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { products as staticProducts } from '../../data/products';
+import { getProducts } from '../../utils/getProducts';
 import ProductCard from '../shop/ProductCard';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 
@@ -11,19 +11,8 @@ export default function Trending() {
   const [trending, setTrending] = useState([]);
 
   useEffect(() => {
-    let sourceProducts = staticProducts;
-    try {
-      const saved = localStorage.getItem('glam_aura_products');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          sourceProducts = parsed;
-        }
-      }
-    } catch (e) {
-      console.error("Error loading products:", e);
-    }
-    setTrending(sourceProducts.filter(p => p.featured));
+    const products = getProducts();
+    setTrending(products.filter(p => p.featured));
   }, []);
 
   const scroll = (direction) => {

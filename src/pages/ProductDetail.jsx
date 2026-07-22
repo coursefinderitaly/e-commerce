@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Check, Star, ChevronLeft, Minus, Plus } from 'lucide-react';
-import { products } from '../data/products';
+import { ChevronLeft, Minus, Plus, ShoppingBag, Star, Check } from 'lucide-react';
+import { getProducts } from '../utils/getProducts';
 import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/formatCurrency';
 import { categoryConfig } from '../utils/categoryConfig';
@@ -13,7 +13,8 @@ import OptimizedImage from '../components/ui/OptimizedImage';
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const product = products.find(p => p.id === id);
+  const products = getProducts();
+  const product = products.find(p => String(p.id) === String(id));
   const { addItem } = useCart();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
