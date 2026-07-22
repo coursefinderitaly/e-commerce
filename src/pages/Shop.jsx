@@ -43,11 +43,10 @@ export default function Shop() {
           break;
       }
       setFiltered(result);
-      setLoading(false);
     };
 
     loadProducts();
-  }, [category, sort]);
+  }, [category, sort, sourceProducts, loading]);
 
   const cfg = categoryConfig[category];
   const title = category || 'All Products';
