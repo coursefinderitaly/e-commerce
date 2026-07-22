@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Package, ShoppingBag, IndianRupee, TrendingUp, Plus } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { categories, products as initialProducts } from '../../data/products';
+import { useProducts } from '../../context/ProductsContext';
+import { categories } from '../../data/products';
 import { formatCurrency } from '../../utils/formatCurrency';
 import Sidebar from '../../components/admin/Sidebar';
 import StatCard from '../../components/admin/StatCard';
@@ -16,14 +17,13 @@ export default function AdminDashboard() {
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [products, setProducts] = useState([]);
+  const { products, fetchProducts, loading: isLoading } = useProducts();
   const [editingProduct, setEditingProduct] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   const statsData = [
-    { label: 'Total Products', value: products.length.toString(), icon: Package, color: '#3E4C6D' },
+    { label: 'Total Products', value: (products?.length || 0).toString(), icon: Package, color: '#3E4C6D' },
     { label: 'Total Orders', value: '0', icon: ShoppingBag, color: '#B2502B' },
     { label: 'Revenue', value: '₹0', icon: IndianRupee, color: '#79876B' },
     { label: 'Growth', value: '0.0%', icon: TrendingUp, color: '#8A3F56' },
@@ -36,25 +36,6 @@ export default function AdminDashboard() {
   }, [isAdmin, navigate]);
 
   useEffect(() => {
-    const fetchProducts = () => {
-      try {
-        const saved = localStorage.getItem('glam_aura_products');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setProducts(parsed);
-            setIsLoading(false);
-            return;
-          }
-        }
-      } catch (error) {
-        console.error("Error loading products:", error);
-      }
-      setProducts(initialProducts);
-      localStorage.setItem('glam_aura_products', JSON.stringify(initialProducts));
-      setIsLoading(false);
-    };
-    
     if (isAdmin) {
       fetchProducts();
     }
@@ -69,22 +50,25 @@ export default function AdminDashboard() {
     navigate('/admin/login');
   };
 
-  const handleSaveProduct = (productData) => {
-    let updatedList;
-    if (editingProduct) {
-      updatedList = products.map(p => String(p.id) === String(productData.id) ? productData : p);
-    } else {
-      updatedList = [...products, productData];
-    }
-    
+  const handleSaveProduct = async (productData) => {
     try {
-      localStorage.setItem('glam_aura_products', JSON.stringify(updatedList));
-      setProducts(updatedList);
+      const url = editingProduct ? `/api/products/${productData.id}` : '/api/products';
+      const method = editingProduct ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+      });
+      
+      if (!response.ok) throw new Error('Failed to save product');
+      
+      await fetchProducts(); // Refresh the list from backend
       setShowForm(false);
       setEditingProduct(null);
     } catch (error) {
-      console.error("Local storage error:", error);
-      alert("Failed to save product. The image might be too large if Cloudinary upload failed. Please try again with a valid Cloudinary config or smaller image.");
+      console.error("API error:", error);
+      alert("Failed to save product. Please try again.");
     }
   };
 
@@ -97,12 +81,19 @@ export default function AdminDashboard() {
     setDeleteConfirm(product);
   };
 
-  const confirmDelete = () => {
-    if (deleteConfirm) {
-      const updatedList = products.filter(p => p.id !== deleteConfirm.id);
-      setProducts(updatedList);
-      localStorage.setItem('glam_aura_products', JSON.stringify(updatedList));
+  const confirmDelete = async () => {
+    try {
+      const response = await fetch(`/api/products/${deleteConfirm.id}`, {
+        method: 'DELETE'
+      });
+      
+      if (!response.ok) throw new Error('Failed to delete product');
+      
+      await fetchProducts();
       setDeleteConfirm(null);
+    } catch (error) {
+      console.error("API error:", error);
+      alert("Failed to delete product. Please try again.");
     }
   };
 

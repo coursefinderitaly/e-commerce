@@ -3,6 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ProductsProvider } from './context/ProductsContext';
 import AnimatedBackground from './components/layout/AnimatedBackground';
 import ThemeSwitcher from './components/layout/ThemeSwitcher';
 import Navbar from './components/layout/Navbar';
@@ -60,9 +61,11 @@ export default function App() {
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <CartProvider>
-            <AppLayout />
-          </CartProvider>
+          <ProductsProvider>
+            <CartProvider>
+              <AppLayout />
+            </CartProvider>
+          </ProductsProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

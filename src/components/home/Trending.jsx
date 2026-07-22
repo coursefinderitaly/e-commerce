@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getProducts } from '../../utils/getProducts';
+import { useProducts } from '../../context/ProductsContext';
 import ProductCard from '../shop/ProductCard';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 
@@ -9,11 +9,11 @@ export default function Trending() {
   const scrollRef = useRef(null);
   const { ref, isVisible } = useScrollReveal();
   const [trending, setTrending] = useState([]);
+  const { products } = useProducts();
 
   useEffect(() => {
-    const products = getProducts();
     setTrending(products.filter(p => p.featured));
-  }, []);
+  }, [products]);
 
   const scroll = (direction) => {
     if (scrollRef.current) {

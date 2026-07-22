@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Filter, SlidersHorizontal } from 'lucide-react';
-import { getProducts } from '../utils/getProducts';
+import { useProducts } from '../context/ProductsContext';
 import { categoryConfig } from '../utils/categoryConfig';
 import ProductCard from '../components/shop/ProductCard';
 import FilterSidebar from '../components/shop/FilterSidebar';
@@ -20,13 +20,11 @@ export default function Shop() {
   const [filtered, setFiltered] = useState([]);
   const [sort, setSort] = useState('newest');
   const [mobileFilter, setMobileFilter] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { products: sourceProducts, loading } = useProducts();
 
   useEffect(() => {
     const loadProducts = () => {
-      setLoading(true);
-      const sourceProducts = getProducts();
-
+      if (loading) return;
       let result = [...sourceProducts];
       if (category) {
         result = result.filter(p => p.category === category);
