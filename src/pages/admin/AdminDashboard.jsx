@@ -76,10 +76,16 @@ export default function AdminDashboard() {
     } else {
       updatedList = [...products, productData];
     }
-    setProducts(updatedList);
-    localStorage.setItem('glam_aura_products', JSON.stringify(updatedList));
-    setShowForm(false);
-    setEditingProduct(null);
+    
+    try {
+      localStorage.setItem('glam_aura_products', JSON.stringify(updatedList));
+      setProducts(updatedList);
+      setShowForm(false);
+      setEditingProduct(null);
+    } catch (error) {
+      console.error("Local storage error:", error);
+      alert("Failed to save product. The image might be too large if Cloudinary upload failed. Please try again with a valid Cloudinary config or smaller image.");
+    }
   };
 
   const handleEdit = (product) => {

@@ -20,12 +20,15 @@ import NotFound from './pages/NotFound';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
+import ScrollToTop from './components/layout/ScrollToTop';
+
 function AppLayout() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
 
   return (
     <>
+      <ScrollToTop />
       <AnimatedBackground />
       {!isAdmin && <ThemeSwitcher />}
       {!isAdmin && <Navbar />}
