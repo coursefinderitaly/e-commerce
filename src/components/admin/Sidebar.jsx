@@ -8,7 +8,7 @@ const links = [
 
 export default function Sidebar({ activeTab, onTabChange, onLogout }) {
   return (
-    <aside className="w-64 bg-transparent min-h-screen flex flex-col">
+    <aside className="w-64 bg-transparent h-screen sticky top-0 flex flex-col border-r border-bone/10">
       <div className="p-6 border-b border-bone/10">
         <div className="flex items-center gap-2">
           <img src="/logo1.webp" alt="Glam AURA" className="h-16 w-auto" decoding="async" />
