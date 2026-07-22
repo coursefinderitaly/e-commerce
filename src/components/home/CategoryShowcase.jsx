@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
+import OptimizedImage from '../ui/OptimizedImage';
 
 const colorMap = {
   rust: '#B2502B',
@@ -15,14 +16,14 @@ const categories = [
     path: '/shop/Cosmetics',
     color: 'berry',
     description: 'Skincare & makeup for your daily ritual',
-    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600',
+    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348',
   },
   {
     name: 'Fashion',
     path: '#',
     color: 'rust',
     description: 'Statement pieces & timeless accessories',
-    image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600',
+    image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b',
     comingSoon: true,
   },
   {
@@ -30,7 +31,7 @@ const categories = [
     path: '#',
     color: 'indigo',
     description: 'Everyday essentials with elevated design',
-    image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600',
+    image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b',
     comingSoon: true,
   },
 ];
@@ -61,9 +62,13 @@ export default function CategoryShowcase() {
             >
               {cat.comingSoon ? (
                 <div className="group block relative h-80 md:h-96 overflow-hidden rounded-2xl cursor-not-allowed">
-                  <motion.div
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700"
-                    style={{ backgroundImage: `url(${cat.image})`, filter: 'grayscale(60%) opacity(70%)' }}
+                  <OptimizedImage
+                    src={cat.image}
+                    alt={cat.name}
+                    width={600}
+                    quality={75}
+                    containerClassName="absolute inset-0"
+                    className="w-full h-full object-cover transition-transform duration-700 grayscale-[60%] opacity-70"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
                   <div className="absolute top-0 right-0 p-4 z-10">
@@ -81,16 +86,20 @@ export default function CategoryShowcase() {
                 </div>
               ) : (
                 <Link to={cat.path} className="group block relative h-80 md:h-96 overflow-hidden rounded-2xl">
-                  <motion.div
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                    style={{ backgroundImage: `url(${cat.image})` }}
+                  <OptimizedImage
+                    src={cat.image}
+                    alt={cat.name}
+                    width={600}
+                    quality={75}
+                    containerClassName="absolute inset-0"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   <div
-                    className="absolute top-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    className="absolute top-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
                     style={{ backgroundColor: colorMap[cat.color] }}
                   />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
                     <h3 className="font-display text-2xl text-white mb-1">{cat.name}</h3>
                     <p className="font-body text-white/70 text-sm mb-3">{cat.description}</p>
                     <span

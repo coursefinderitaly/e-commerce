@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Search, Edit2, Trash2, ChevronDown } from 'lucide-react';
 import { categoryConfig } from '../../utils/categoryConfig';
 import { formatCurrency } from '../../utils/formatCurrency';
+import OptimizedImage from '../ui/OptimizedImage';
 
 export default function ProductTable({ products, onEdit, onDelete, categories }) {
   const [search, setSearch] = useState('');
@@ -67,7 +68,7 @@ export default function ProductTable({ products, onEdit, onDelete, categories })
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <img src={product.images[0]} alt={product.name} className="w-10 h-12 object-cover rounded" />
+                        <OptimizedImage src={product.images[0]} alt={product.name} width={100} containerClassName="w-10 h-12 rounded flex-shrink-0" className="w-full h-full object-cover" />
                         <span className="font-body text-sm text-paper font-medium">{product.name}</span>
                       </div>
                     </td>

@@ -4,6 +4,9 @@ import { ChevronDown, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../ui/Button';
 import { products } from '../../data/products';
+import { formatCurrency } from '../../utils/formatCurrency';
+
+import OptimizedImage from '../ui/OptimizedImage';
 
 function PigmentBloom({ color, delay, x, y, size }) {
   return (
@@ -90,10 +93,16 @@ export default function Hero() {
           >
             {mobilePreviewProducts.map((p) => (
               <Link key={p.id} to="/shop" className="snap-center shrink-0 w-[140px] h-[180px] relative rounded-2xl overflow-hidden group shadow-xl">
-                <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <OptimizedImage
+                  src={p.images[0]}
+                  alt={p.name}
+                  width={250}
+                  containerClassName="w-full h-full"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-3">
                   <p className="text-white font-display text-sm leading-tight line-clamp-2 mb-1 drop-shadow-md">{p.name}</p>
-                  <p className="text-white/90 font-body text-xs drop-shadow-md">${p.price.toFixed(2)}</p>
+                  <p className="text-white/90 font-body text-xs drop-shadow-md">{formatCurrency(p.price)}</p>
                 </div>
               </Link>
             ))}
@@ -109,10 +118,13 @@ export default function Hero() {
         >
           {/* A subtle glow behind the logo to make it pop on dark background */}
           <div className="absolute inset-0 bg-paper/5 blur-3xl rounded-full scale-150"></div>
-          <img 
-            src="/logo1.png" 
+          <OptimizedImage
+            src="/logo1.webp" 
             alt="Glam AURA Logo" 
-            className="relative w-full max-w-sm md:max-w-md lg:max-w-lg h-auto object-contain drop-shadow-2xl"
+            priority={true}
+            width={800}
+            containerClassName="relative w-full max-w-sm md:max-w-md lg:max-w-lg"
+            className="w-full h-auto object-contain drop-shadow-2xl"
           />
         </motion.div>
       </div>

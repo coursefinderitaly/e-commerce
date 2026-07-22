@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Package, ShoppingBag, DollarSign, TrendingUp, Plus } from 'lucide-react';
+import { Package, ShoppingBag, IndianRupee, TrendingUp, Plus } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { categories, products as initialProducts } from '../../data/products';
-import { db } from '../../config/firebase';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { formatCurrency } from '../../utils/formatCurrency';
 import Sidebar from '../../components/admin/Sidebar';
 import StatCard from '../../components/admin/StatCard';
@@ -13,8 +11,6 @@ import ProductTable from '../../components/admin/ProductTable';
 import ProductForm from '../../components/admin/ProductForm';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
-
-
 
 export default function AdminDashboard() {
   const { user, logout, isAdmin } = useAuth();
@@ -29,7 +25,7 @@ export default function AdminDashboard() {
   const statsData = [
     { label: 'Total Products', value: products.length.toString(), icon: Package, color: '#3E4C6D' },
     { label: 'Total Orders', value: '0', icon: ShoppingBag, color: '#B2502B' },
-    { label: 'Revenue', value: '$0.00', icon: DollarSign, color: '#79876B' },
+    { label: 'Revenue', value: '₹0', icon: IndianRupee, color: '#79876B' },
     { label: 'Growth', value: '0.0%', icon: TrendingUp, color: '#8A3F56' },
   ];
 
@@ -40,30 +36,23 @@ export default function AdminDashboard() {
   }, [isAdmin, navigate]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProducts = () => {
       try {
-        if (!db) return setIsLoading(false);
-        const querySnapshot = await getDocs(collection(db, 'products'));
-        let productsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-        // Auto-seed database if completely empty
-        if (productsList.length === 0) {
-          console.log("Database empty, seeding initial products...");
-          for (const p of initialProducts) {
-             const { id, ...data } = p; // Remove static ID so Firebase generates a real one
-             await addDoc(collection(db, 'products'), data);
+        const saved = localStorage.getItem('glam_aura_products');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setProducts(parsed);
+            setIsLoading(false);
+            return;
           }
-          // Fetch the newly seeded products
-          const newSnapshot = await getDocs(collection(db, 'products'));
-          productsList = newSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         }
-
-        setProducts(productsList);
       } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setIsLoading(false);
+        console.error("Error loading products:", error);
       }
+      setProducts(initialProducts);
+      localStorage.setItem('glam_aura_products', JSON.stringify(initialProducts));
+      setIsLoading(false);
     };
     
     if (isAdmin) {
@@ -80,28 +69,17 @@ export default function AdminDashboard() {
     navigate('/admin/login');
   };
 
-  const handleSaveProduct = async (productData) => {
-    try {
-      if (editingProduct) {
-        // Update existing product
-        const { id, ...updateData } = productData;
-        if (db) await updateDoc(doc(db, 'products', id), updateData);
-        setProducts(products.map(p => p.id === productData.id ? productData : p));
-      } else {
-        // Add new product
-        const { id, ...newData } = productData;
-        if (db) {
-          const docRef = await addDoc(collection(db, 'products'), newData);
-          setProducts([...products, { ...newData, id: docRef.id }]);
-        } else {
-          setProducts([...products, productData]); // fallback if no DB
-        }
-      }
-      setShowForm(false);
-      setEditingProduct(null);
-    } catch (error) {
-      console.error("Error saving product:", error);
+  const handleSaveProduct = (productData) => {
+    let updatedList;
+    if (editingProduct) {
+      updatedList = products.map(p => p.id === productData.id ? productData : p);
+    } else {
+      updatedList = [...products, productData];
     }
+    setProducts(updatedList);
+    localStorage.setItem('glam_aura_products', JSON.stringify(updatedList));
+    setShowForm(false);
+    setEditingProduct(null);
   };
 
   const handleEdit = (product) => {
@@ -113,15 +91,12 @@ export default function AdminDashboard() {
     setDeleteConfirm(product);
   };
 
-  const confirmDelete = async () => {
-    try {
-      if (deleteConfirm && db) {
-        await deleteDoc(doc(db, 'products', deleteConfirm.id));
-      }
-      setProducts(products.filter(p => p.id !== deleteConfirm.id));
+  const confirmDelete = () => {
+    if (deleteConfirm) {
+      const updatedList = products.filter(p => p.id !== deleteConfirm.id);
+      setProducts(updatedList);
+      localStorage.setItem('glam_aura_products', JSON.stringify(updatedList));
       setDeleteConfirm(null);
-    } catch (error) {
-      console.error("Error deleting product:", error);
     }
   };
 

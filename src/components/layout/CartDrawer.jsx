@@ -5,6 +5,8 @@ import { useCart } from '../../context/CartContext';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { categoryConfig } from '../../utils/categoryConfig';
 
+import OptimizedImage from '../ui/OptimizedImage';
+
 export default function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, subtotal, clearCart } = useCart();
 
@@ -60,10 +62,12 @@ export default function CartDrawer() {
                       animate={{ opacity: 1, y: 0 }}
                       className="flex gap-3 bg-transparent rounded-lg p-3 border border-paper/5"
                     >
-                      <img
+                      <OptimizedImage
                         src={item.image}
                         alt={item.name}
-                        className="w-20 h-24 object-cover rounded-md"
+                        width={160}
+                        containerClassName="w-20 h-24 rounded-md"
+                        className="w-full h-full object-cover"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">

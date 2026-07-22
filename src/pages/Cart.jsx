@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/formatCurrency';
 import { categoryConfig } from '../utils/categoryConfig';
 import Button from '../components/ui/Button';
+import OptimizedImage from '../components/ui/OptimizedImage';
 
 export default function Cart() {
   const { items, removeItem, updateQuantity, subtotal, clearCart } = useCart();
@@ -56,7 +57,7 @@ export default function Cart() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-transparent rounded-xl p-4 border border-paper/5 flex gap-4"
               >
-                <img src={item.image} alt={item.name} className="w-24 h-28 object-cover rounded-lg flex-shrink-0" />
+                <OptimizedImage src={item.image} alt={item.name} width={200} containerClassName="w-24 h-28 rounded-lg flex-shrink-0" className="w-full h-full object-cover" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div>

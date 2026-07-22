@@ -68,7 +68,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2">
-              <img src="/logo1.png" alt="Glam AURA" className="h-16 w-auto" />
+              <img src="/logo1.webp" alt="Glam AURA" className="h-16 w-auto" decoding="async" fetchPriority="high" />
             </Link>
 
             <div className="hidden lg:flex items-center gap-8">

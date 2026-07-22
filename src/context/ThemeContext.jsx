@@ -55,10 +55,28 @@ export const themes = {
 
 export function ThemeProvider({ children }) {
   const [currentThemeId, setCurrentThemeId] = useState('obsidian');
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
 
+  // Auto-cycle themes
+  useEffect(() => {
+    if (!isAutoPlay) return;
+    const themeKeys = Object.keys(themes);
+    const interval = setInterval(() => {
+      setCurrentThemeId(prev => {
+        const nextIndex = (themeKeys.indexOf(prev) + 1) % themeKeys.length;
+        return themeKeys[nextIndex];
+      });
+    }, 10000); // 10 seconds
+    return () => clearInterval(interval);
+  }, [isAutoPlay]);
+
+  // Apply theme variables with transition
   useEffect(() => {
     const theme = themes[currentThemeId];
     const root = document.documentElement;
+
+    root.classList.add('theme-transitioning');
+
     root.style.setProperty('--color-ink-rgb', theme.inkRGB);
     root.style.setProperty('--color-paper-rgb', theme.paperRGB);
     root.style.setProperty('--theme-bg1', theme.bg1);
@@ -66,10 +84,22 @@ export function ThemeProvider({ children }) {
     root.style.setProperty('--theme-blob1', theme.blob1);
     root.style.setProperty('--theme-blob2', theme.blob2);
     root.style.setProperty('--theme-blob3', theme.blob3);
+
+    const timer = setTimeout(() => {
+      root.classList.remove('theme-transitioning');
+    }, 1500);
+
+    return () => clearTimeout(timer);
   }, [currentThemeId]);
 
+  // Pause auto-play when user manually selects a theme
+  const handleSetTheme = (themeId) => {
+    setCurrentThemeId(themeId);
+    setIsAutoPlay(false);
+  };
+
   return (
-    <ThemeContext.Provider value={{ currentThemeId, setCurrentThemeId, themes }}>
+    <ThemeContext.Provider value={{ currentThemeId, setCurrentThemeId: handleSetTheme, themes, isAutoPlay, setIsAutoPlay }}>
       {children}
     </ThemeContext.Provider>
   );

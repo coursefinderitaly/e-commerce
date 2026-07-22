@@ -4,6 +4,8 @@ import { X, Upload } from 'lucide-react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 
+import { uploadToCloudinary } from '../../utils/cloudinary';
+
 const categories = ['Skincare', 'Makeup', 'Fragrance'];
 
 export default function ProductForm({ product, onSubmit, onClose }) {
@@ -11,6 +13,8 @@ export default function ProductForm({ product, onSubmit, onClose }) {
     name: '', description: '', price: '', originalPrice: '',
     category: 'Skincare', stock: '', images: [''],
   });
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   useEffect(() => {
     if (product) {
@@ -43,47 +47,48 @@ export default function ProductForm({ product, onSubmit, onClose }) {
     setForm(f => ({ ...f, images: f.images.filter((_, i) => i !== index) }));
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (!file) return;
+
+    setUploading(true);
+    setUploadError('');
+
+    try {
+      const imageUrl = await uploadToCloudinary(file);
+      setForm(f => ({
+        ...f,
+        images: f.images[0] === '' && f.images.length === 1
+          ? [imageUrl]
+          : [...f.images.filter(img => img !== ''), imageUrl]
+      }));
+    } catch (err) {
+      console.warn('Cloudinary upload fallback activated:', err.message);
+      setUploadError('Cloudinary config missing or failed. Saved as local compressed image.');
+      
       const reader = new FileReader();
       reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 800;
-          const MAX_HEIGHT = 800;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
+          const MAX = 800;
+          let w = img.width, h = img.height;
+          if (w > h) { if (w > MAX) { h *= MAX / w; w = MAX; } }
+          else { if (h > MAX) { w *= MAX / h; h = MAX; } }
+          canvas.width = w; canvas.height = h;
           const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
-
-          setForm(f => ({ 
-            ...f, 
-            images: f.images[0] === '' && f.images.length === 1 
-              ? [compressedDataUrl] 
-              : [...f.images.filter(img => img !== ''), compressedDataUrl] 
+          ctx.drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+          setForm(f => ({
+            ...f,
+            images: f.images[0] === '' && f.images.length === 1 ? [dataUrl] : [...f.images.filter(i => i !== ''), dataUrl]
           }));
         };
         img.src = event.target.result;
       };
       reader.readAsDataURL(file);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -140,8 +145,8 @@ export default function ProductForm({ product, onSubmit, onClose }) {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Input label="Price ($)" type="number" step="0.01" min="0" value={form.price} onChange={updateField('price')} required />
-            <Input label="Original Price ($)" type="number" step="0.01" min="0" value={form.originalPrice} onChange={updateField('originalPrice')} />
+            <Input label="Price (₹)" type="number" step="0.01" min="0" value={form.price} onChange={updateField('price')} required />
+            <Input label="Original Price (₹)" type="number" step="0.01" min="0" value={form.originalPrice} onChange={updateField('originalPrice')} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -183,11 +188,14 @@ export default function ProductForm({ product, onSubmit, onClose }) {
               <button type="button" onClick={addImage} className="flex items-center gap-2 text-sm font-body text-paper/50 hover:text-paper transition-colors">
                 <Upload size={16} /> Add URL Link
               </button>
-              <label className="flex items-center gap-2 text-sm font-body text-paper/50 hover:text-paper transition-colors cursor-pointer">
-                <Upload size={16} /> Upload Local Image
-                <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
+              <label className={`flex items-center gap-2 text-sm font-body ${uploading ? 'text-amber-400 animate-pulse' : 'text-paper/50 hover:text-paper'} transition-colors cursor-pointer`}>
+                <Upload size={16} /> {uploading ? 'Uploading to Cloudinary…' : 'Upload Image (Cloudinary)'}
+                <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
               </label>
             </div>
+            {uploadError && (
+              <p className="text-xs font-body text-amber-400/80 mt-1">{uploadError}</p>
+            )}
           </div>
 
           <div className="flex gap-3 pt-4 border-t border-paper/10">

@@ -5,6 +5,7 @@ import { ShoppingBag, Check, Star } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { categoryConfig } from '../../utils/categoryConfig';
+import OptimizedImage from '../ui/OptimizedImage';
 import Badge from '../ui/Badge';
 
 export default function ProductCard({ product }) {
@@ -29,11 +30,13 @@ export default function ProductCard({ product }) {
       >
         <div className="relative overflow-hidden aspect-[3/4]">
           <div className="absolute top-0 left-0 right-0 h-[3px] z-10" style={{ backgroundColor: cfg.fill }} />
-          <img
+          <OptimizedImage
             src={product.images[0]}
             alt={product.name}
+            width={450}
+            quality={75}
+            containerClassName="w-full h-full"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
           />
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
             {hasDiscount && <Badge variant="sale">Sale</Badge>}

@@ -9,6 +9,7 @@ import { categoryConfig } from '../utils/categoryConfig';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import ProductCard from '../components/shop/ProductCard';
+import OptimizedImage from '../components/ui/OptimizedImage';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -60,9 +61,13 @@ export default function ProductDetail() {
               animate={{ opacity: 1, y: 0 }}
               className="aspect-[4/5] rounded-2xl overflow-hidden bg-transparent"
             >
-              <img
+              <OptimizedImage
                 src={product.images[selectedImage]}
                 alt={product.name}
+                width={800}
+                quality={80}
+                priority={true}
+                containerClassName="w-full h-full"
                 className="w-full h-full object-cover"
               />
             </motion.div>
@@ -76,7 +81,7 @@ export default function ProductDetail() {
                       i === selectedImage ? 'border-paper/20' : 'border-transparent hover:border-paper/20'
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <OptimizedImage src={img} alt="" width={160} containerClassName="w-full h-full" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

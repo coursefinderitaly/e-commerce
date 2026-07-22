@@ -3,8 +3,6 @@ import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Filter, SlidersHorizontal } from 'lucide-react';
 import { products as staticProducts } from '../data/products';
-import { db } from '../config/firebase';
-import { collection, getDocs } from 'firebase/firestore';
 import { categoryConfig } from '../utils/categoryConfig';
 import ProductCard from '../components/shop/ProductCard';
 import FilterSidebar from '../components/shop/FilterSidebar';
@@ -25,19 +23,20 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadProducts = async () => {
+    const loadProducts = () => {
       setLoading(true);
       let sourceProducts = staticProducts;
 
       try {
-        if (db) {
-          const snapshot = await getDocs(collection(db, 'products'));
-          if (!snapshot.empty) {
-            sourceProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        const saved = localStorage.getItem('glam_aura_products');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            sourceProducts = parsed;
           }
         }
       } catch (err) {
-        console.error('Failed to load products from Firebase, falling back to local.', err);
+        console.error('Failed to load local saved products.', err);
       }
 
       let result = [...sourceProducts];

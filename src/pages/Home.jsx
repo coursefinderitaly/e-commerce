@@ -6,6 +6,8 @@ import Newsletter from '../components/home/Newsletter';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useCountUp } from '../hooks/useCountUp';
 
+import OptimizedImage from '../components/ui/OptimizedImage';
+
 function Stats() {
   const { ref, isVisible } = useScrollReveal();
   const { ref: count1, count: c1 } = useCountUp(50000);
@@ -52,10 +54,13 @@ function BrandStory() {
             animate={isVisible ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6 }}
           >
-            <img
-              src="https://images.unsplash.com/photo-1617897903246-719242758050?w=800"
+            <OptimizedImage
+              src="https://images.unsplash.com/photo-1617897903246-719242758050"
               alt="Glam AURA Cosmetics"
-              className="rounded-2xl w-full h-[400px] object-cover shadow-2xl"
+              width={800}
+              quality={75}
+              containerClassName="rounded-2xl w-full h-[400px] shadow-2xl"
+              className="w-full h-full object-cover"
             />
           </motion.div>
           <motion.div

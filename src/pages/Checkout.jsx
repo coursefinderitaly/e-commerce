@@ -7,6 +7,7 @@ import { formatCurrency } from '../utils/formatCurrency';
 import { validateEmail, validateRequired } from '../utils/validators';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import OptimizedImage from '../components/ui/OptimizedImage';
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -218,7 +219,7 @@ export default function Checkout() {
               <div className="space-y-3 font-body text-sm">
                 {items.map(item => (
                   <div key={item.id} className="flex gap-3">
-                    <img src={item.image} alt={item.name} className="w-12 h-14 object-cover rounded" />
+                    <OptimizedImage src={item.image} alt={item.name} width={120} containerClassName="w-12 h-14 rounded flex-shrink-0" className="w-full h-full object-cover" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate">{item.name}</p>
                       <p className="text-xs text-paper/40">Qty: {item.quantity}</p>

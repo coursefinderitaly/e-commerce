@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
           
           <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-            <img src="/logo1.png" alt="Glam AURA" className="h-12 w-auto" />
+            <img src="/logo1.webp" alt="Glam AURA" className="h-12 w-auto" loading="lazy" decoding="async" />
             <p className="text-xs font-body text-bone/60 max-w-[250px]">
               Premium cosmetics and skincare for those who live with intention and style.
             </p>
