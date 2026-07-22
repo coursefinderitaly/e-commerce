@@ -10,15 +10,12 @@ import { categoryConfig } from '../../utils/categoryConfig';
 const navLinks = [
   { name: 'Home', path: '/' },
   {
-    name: 'Shop',
+    name: 'All Cosmetics',
     path: '/shop',
     children: [
-      { name: 'All Cosmetics', path: '/shop' },
       { name: 'Skincare', path: '/shop/Skincare' },
       { name: 'Makeup', path: '/shop/Makeup' },
       { name: 'Fragrance', path: '/shop/Fragrance' },
-      { name: 'Fashion', path: '#', comingSoon: true },
-      { name: 'Clothing', path: '#', comingSoon: true },
     ],
   },
   { name: 'About', path: '/about' },

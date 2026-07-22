@@ -4,12 +4,15 @@ import { X } from 'lucide-react';
 
 const links = [
   { name: 'Home', path: '/' },
-  { name: 'All Cosmetics', path: '/shop' },
-  { name: 'Skincare', path: '/shop/Skincare' },
-  { name: 'Makeup', path: '/shop/Makeup' },
-  { name: 'Fragrance', path: '/shop/Fragrance' },
-  { name: 'Fashion', path: '#', comingSoon: true },
-  { name: 'Clothing', path: '#', comingSoon: true },
+  { 
+    name: 'All Cosmetics', 
+    path: '/shop',
+    children: [
+      { name: 'Skincare', path: '/shop/Skincare' },
+      { name: 'Makeup', path: '/shop/Makeup' },
+      { name: 'Fragrance', path: '/shop/Fragrance' },
+    ]
+  },
   { name: 'About', path: '/about' },
   { name: 'Contact', path: '/contact' },
 ];
@@ -31,7 +34,7 @@ export default function MobileMenu({ isOpen, onClose }) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 bottom-0 w-80 bg-transparent z-50 lg:hidden"
+            className="fixed top-0 right-0 bottom-0 w-80 bg-ink/95 backdrop-blur-xl border-l border-paper/10 z-50 lg:hidden overflow-y-auto"
           >
             <div className="p-6">
               <button onClick={onClose} className="text-bone/70 hover:text-bone mb-8">
@@ -46,24 +49,26 @@ export default function MobileMenu({ isOpen, onClose }) {
                     transition={{ delay: i * 0.05 }}
                   >
                     <Link
-                      to={link.comingSoon ? '#' : link.path}
-                      onClick={(e) => {
-                        if (link.comingSoon) e.preventDefault();
-                        else onClose();
-                      }}
-                      className={`flex justify-between items-center py-3 px-4 rounded-lg font-body text-lg transition-colors ${
-                        link.comingSoon
-                          ? 'text-bone/40 cursor-not-allowed'
-                          : 'text-bone/80 hover:text-bone hover:bg-bone/5'
-                      }`}
+                      to={link.path}
+                      onClick={() => onClose()}
+                      className="flex justify-between items-center py-3 px-4 rounded-lg font-body text-lg transition-colors text-bone/80 hover:text-bone hover:bg-bone/5"
                     >
                       {link.name}
-                      {link.comingSoon && (
-                        <span className="text-xs uppercase tracking-wider bg-bone/10 text-bone/60 px-2 py-1 rounded-full">
-                          Coming Soon
-                        </span>
-                      )}
                     </Link>
+                    {link.children && (
+                      <div className="pl-6 space-y-1 mt-1 border-l-2 border-bone/10 ml-6">
+                        {link.children.map(child => (
+                          <Link
+                            key={child.path}
+                            to={child.path}
+                            onClick={() => onClose()}
+                            className="block py-2 px-4 rounded-lg font-body text-base transition-colors text-bone/60 hover:text-bone hover:bg-bone/5"
+                          >
+                            {child.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </motion.div>
                 ))}
               </nav>
