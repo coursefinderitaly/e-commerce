@@ -10,7 +10,8 @@ export function ProductsProvider({ children }) {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/products');
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${baseUrl}/api/products`);
       if (response.ok) {
         const data = await response.json();
         setProducts(data);

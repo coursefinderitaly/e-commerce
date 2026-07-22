@@ -52,7 +52,8 @@ export default function AdminDashboard() {
 
   const handleSaveProduct = async (productData) => {
     try {
-      const url = editingProduct ? `/api/products/${productData.id}` : '/api/products';
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const url = editingProduct ? `${baseUrl}/api/products/${productData.id}` : `${baseUrl}/api/products`;
       const method = editingProduct ? 'PUT' : 'POST';
       
       const response = await fetch(url, {
@@ -83,7 +84,8 @@ export default function AdminDashboard() {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`/api/products/${deleteConfirm.id}`, {
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${baseUrl}/api/products/${deleteConfirm.id}`, {
         method: 'DELETE'
       });
       
