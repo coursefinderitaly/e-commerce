@@ -1,12 +1,6 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-
-  # Proxy /api requests to the local Node.js backend port.
-  # IMPORTANT: Change '5000' to the actual port Hostinger assigns to your Node.js app if it's different.
-  RewriteRule ^api/(.*)$ http://127.0.0.1:5000/api/$1 [P,L]
-
-  # For React Router SPA
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

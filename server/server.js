@@ -91,6 +91,16 @@ app.delete('/api/products/:id', (req, res) => {
   });
 });
 
+const path = require('path');
+
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Handle React Router SPA fallback
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
