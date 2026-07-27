@@ -14,6 +14,7 @@ import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
 
 export default function AdminDashboard() {
+  console.log("Deployment V2 active");
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
