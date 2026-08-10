@@ -49,6 +49,19 @@ const db = new sqlite3.Database(dbPath, (err) => {
     )`, (err) => {
       if (err) console.error('Error creating orders table', err.message);
     });
+
+    // Create super secure users table
+    db.run(`CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      phone TEXT,
+      role TEXT DEFAULT 'customer',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+      if (err) console.error('Error creating users table', err.message);
+    });
   }
 });
 

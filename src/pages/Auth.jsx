@@ -55,7 +55,7 @@ export default function Auth() {
 
   const strength = getPasswordStrength(password);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -65,15 +65,13 @@ export default function Auth() {
         return;
       }
       setLoading(true);
-      setTimeout(() => {
-        const res = login(email, password);
-        setLoading(false);
-        if (res.success) {
-          navigate(from, { replace: true });
-        } else {
-          setError(res.error || 'Invalid credentials');
-        }
-      }, 400);
+      const res = await login(email, password);
+      setLoading(false);
+      if (res.success) {
+        navigate(from, { replace: true });
+      } else {
+        setError(res.error || 'Invalid credentials');
+      }
     } else {
       // Signup Validations
       if (!name.trim()) {
@@ -98,22 +96,14 @@ export default function Auth() {
       }
 
       setLoading(true);
-      setTimeout(() => {
-        const res = signup(name, email, password, phone);
-        setLoading(false);
-        if (res.success) {
-          navigate(from, { replace: true });
-        } else {
-          setError(res.error || 'Failed to create account');
-        }
-      }, 400);
+      const res = await signup(name, email, password, phone);
+      setLoading(false);
+      if (res.success) {
+        navigate(from, { replace: true });
+      } else {
+        setError(res.error || 'Failed to create account');
+      }
     }
-  };
-
-  const fillDemoCustomer = () => {
-    setEmail('customer@glamaura.com');
-    setPassword('customer123');
-    setError('');
   };
 
   return (
@@ -387,20 +377,6 @@ export default function Auth() {
               </button>
 
             </form>
-
-            {/* Quick Demo Helper for Testing */}
-            {isLogin && (
-              <div className="mt-5 pt-4 border-t border-gray-100 text-center">
-                <button
-                  type="button"
-                  onClick={fillDemoCustomer}
-                  className="text-xs font-semibold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100/80 px-3 py-1.5 rounded-lg border border-amber-200/60 transition-colors inline-flex items-center gap-1"
-                >
-                  <Sparkles size={12} />
-                  Fill Demo Customer Credentials
-                </button>
-              </div>
-            )}
 
             {/* Trust Footer inside card */}
             <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-center gap-2 text-[11px] text-gray-400">

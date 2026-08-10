@@ -167,6 +167,72 @@ app.post('/api/orders', (req, res) => {
   });
 });
 
+const bcrypt = require('bcryptjs');
+
+// POST secure user signup
+app.post('/api/auth/signup', async (req, res) => {
+  const { name, email, password, phone } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Name, email, and password are required' });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const userId = 'usr_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+
+    const sql = `INSERT INTO users (id, name, email, password, phone, role) VALUES (?, ?, ?, ?, ?, 'customer')`;
+    
+    db.run(sql, [userId, name, email, hashedPassword, phone || null], function(err) {
+      if (err) {
+        if (err.message.includes('UNIQUE constraint failed')) {
+          return res.status(409).json({ error: 'Email already registered' });
+        }
+        return res.status(500).json({ error: 'Database error' });
+      }
+      
+      // Return user object without password
+      res.status(201).json({ 
+        message: 'Account created successfully', 
+        user: { id: userId, name, email, phone, role: 'customer' } 
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error during signup' });
+  }
+});
+
+// POST secure user login
+app.post('/api/auth/login', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+
+  db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    try {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+
+      res.json({ 
+        message: 'Login successful', 
+        user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role } 
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Server error during login' });
+    }
+  });
+});
+
 const path = require('path');
 
 // Serve frontend static files

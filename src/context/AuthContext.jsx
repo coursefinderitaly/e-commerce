@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  const loginAdmin = (email, password) => {
+  const loginAdmin = async (email, password) => {
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       const adminUser = { email, role: 'admin', name: 'Admin' };
       setUser(adminUser);
@@ -30,38 +30,54 @@ export function AuthProvider({ children }) {
     return { success: false, error: 'Invalid admin credentials' };
   };
 
-  const login = (email, password) => {
-    // Dummy customer login for demonstration
-    // In a real app, this would be an API call
-    if (email && password) {
-      const customer = { 
-        email, 
-        role: 'customer', 
-        name: email.split('@')[0], 
-        id: Math.random().toString(36).substr(2, 9) 
-      };
-      setUser(customer);
-      localStorage.setItem('glamaura_user', JSON.stringify(customer));
+  const login = async (email, password) => {
+    if (!email || !password) return { success: false, error: 'Invalid credentials' };
+    
+    try {
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const res = await fetch(`${baseUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Login failed' };
+      }
+      
+      setUser(data.user);
+      localStorage.setItem('glamaura_user', JSON.stringify(data.user));
       return { success: true };
+    } catch (err) {
+      return { success: false, error: 'Server connection failed' };
     }
-    return { success: false, error: 'Invalid credentials' };
   };
 
-  const signup = (name, email, password, phone = '') => {
-    // Customer signup
-    if (name && email && password) {
-      const customer = { 
-        email, 
-        role: 'customer', 
-        name, 
-        phone: phone || '+1 (555) 234-5678',
-        id: 'cust_' + Math.random().toString(36).substr(2, 9) 
-      };
-      setUser(customer);
-      localStorage.setItem('glamaura_user', JSON.stringify(customer));
+  const signup = async (name, email, password, phone = '') => {
+    if (!name || !email || !password) return { success: false, error: 'Please fill all required fields' };
+    
+    try {
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const res = await fetch(`${baseUrl}/api/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, phone })
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Signup failed' };
+      }
+      
+      setUser(data.user);
+      localStorage.setItem('glamaura_user', JSON.stringify(data.user));
       return { success: true };
+    } catch (err) {
+      return { success: false, error: 'Server connection failed' };
     }
-    return { success: false, error: 'Please fill all required fields' };
   };
 
   const logout = () => {
