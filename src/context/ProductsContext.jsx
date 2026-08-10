@@ -4,6 +4,19 @@ import { products as initialProducts } from '../data/products';
 const ProductsContext = createContext();
 const STORAGE_KEY = 'glamaura_products';
 
+function mergeProducts(primaryList = [], fallbackList = []) {
+  const map = new Map();
+  // Load baseline initial products first
+  (fallbackList || []).forEach(p => {
+    if (p && p.id) map.set(String(p.id), p);
+  });
+  // Overlay custom / primary products
+  (primaryList || []).forEach(p => {
+    if (p && p.id) map.set(String(p.id), p);
+  });
+  return Array.from(map.values());
+}
+
 export function ProductsProvider({ children }) {
   const [products, setProducts] = useState(() => {
     try {
@@ -11,7 +24,7 @@ export function ProductsProvider({ children }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return mergeProducts(parsed, initialProducts);
         }
       }
     } catch (e) {
@@ -24,9 +37,10 @@ export function ProductsProvider({ children }) {
 
   // Helper to sync state and localStorage
   const updateProductsState = (newList) => {
-    setProducts(newList);
+    const merged = mergeProducts(newList, initialProducts);
+    setProducts(merged);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newList));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
     } catch (e) {
       console.warn('Failed to save products to localStorage:', e);
     }
@@ -38,9 +52,12 @@ export function ProductsProvider({ children }) {
       const baseUrl = import.meta.env.VITE_API_URL || '';
       const response = await fetch(`${baseUrl}/api/products`);
       if (response.ok) {
-        const data = await response.json();
-        if (Array.isArray(data) && data.length > 0) {
-          updateProductsState(data);
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            updateProductsState(data);
+          }
         }
       }
     } catch (error) {
@@ -54,7 +71,7 @@ export function ProductsProvider({ children }) {
     // 1. Update local state & localStorage immediately so UI never loses products
     let updatedList;
     if (isEdit) {
-      updatedList = products.map(p => p.id === productData.id ? { ...p, ...productData } : p);
+      updatedList = products.map(p => String(p.id) === String(productData.id) ? { ...p, ...productData } : p);
     } else {
       updatedList = [productData, ...products];
     }
@@ -77,7 +94,7 @@ export function ProductsProvider({ children }) {
 
   const deleteProduct = async (productId) => {
     // 1. Update local state & localStorage immediately
-    const updatedList = products.filter(p => p.id !== productId);
+    const updatedList = products.filter(p => String(p.id) !== String(productId));
     updateProductsState(updatedList);
 
     // 2. Attempt API delete if backend is active

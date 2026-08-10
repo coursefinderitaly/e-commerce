@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Filter, SlidersHorizontal } from 'lucide-react';
 import { useProducts } from '../context/ProductsContext';
-import { categoryConfig } from '../utils/categoryConfig';
+import { categoryConfig, matchCategory } from '../utils/categoryConfig';
 import ProductCard from '../components/shop/ProductCard';
 import FilterSidebar from '../components/shop/FilterSidebar';
 import { ProductCardSkeleton } from '../components/ui/Skeleton';
@@ -17,6 +17,8 @@ const sortOptions = [
 
 export default function Shop() {
   const { category } = useParams();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search');
   const [filtered, setFiltered] = useState([]);
   const [sort, setSort] = useState('newest');
   const [mobileFilter, setMobileFilter] = useState(false);
@@ -26,18 +28,30 @@ export default function Shop() {
     const loadProducts = () => {
       if (loading) return;
       let result = [...sourceProducts];
+
       if (category) {
-        result = result.filter(p => p.category === category);
+        result = result.filter(p => matchCategory(p.category, category));
       }
+
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase().trim();
+        result = result.filter(p => 
+          (p.name && p.name.toLowerCase().includes(q)) ||
+          (p.description && p.description.toLowerCase().includes(q)) ||
+          (p.category && p.category.toLowerCase().includes(q)) ||
+          (p.tags && Array.isArray(p.tags) && p.tags.some(t => String(t).toLowerCase().includes(q)))
+        );
+      }
+
       switch (sort) {
         case 'price-asc':
-          result.sort((a, b) => a.price - b.price);
+          result.sort((a, b) => (a.price || 0) - (b.price || 0));
           break;
         case 'price-desc':
-          result.sort((a, b) => b.price - a.price);
+          result.sort((a, b) => (b.price || 0) - (a.price || 0));
           break;
         case 'rating':
-          result.sort((a, b) => b.rating - a.rating);
+          result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
           break;
         default:
           break;
@@ -46,10 +60,10 @@ export default function Shop() {
     };
 
     loadProducts();
-  }, [category, sort, sourceProducts, loading]);
+  }, [category, searchQuery, sort, sourceProducts, loading]);
 
   const cfg = categoryConfig[category];
-  const title = category || 'All Products';
+  const title = searchQuery ? `Search: "${searchQuery}"` : (category || 'All Products');
 
   return (
     <motion.div
@@ -114,7 +128,7 @@ export default function Shop() {
             ) : filtered.length === 0 ? (
               <div className="text-center py-20">
                 <p className="font-display text-2xl text-gray-500 mb-2">No products found</p>
-                <p className="font-body text-gray-900">Try adjusting your filters.</p>
+                <p className="font-body text-gray-900">Try adjusting your filters or search query.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

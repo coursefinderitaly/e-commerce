@@ -26,3 +26,29 @@ export const categoryConfig = new Proxy(baseConfig, {
     return defaultConfig;
   }
 });
+
+export function matchCategory(productCat = '', targetCat = '') {
+  if (!targetCat || targetCat === 'All' || targetCat === 'all' || targetCat === '') return true;
+  if (!productCat) return false;
+
+  const p = productCat.toLowerCase().trim();
+  const t = targetCat.toLowerCase().trim();
+
+  if (p === t) return true;
+
+  // Hair matching
+  if ((t.includes('hair') || t === 'haircare') && (p.includes('hair') || p === 'haircare')) return true;
+
+  // Skin matching
+  if ((t.includes('skin') || t === 'skincare') && (p.includes('skin') || p === 'skincare')) return true;
+
+  // Body matching
+  if ((t.includes('body') || t === 'bodycare') && (p.includes('body') || p === 'bodycare')) return true;
+
+  // Face / Glow / Makeup matching
+  if ((t.includes('face') || t.includes('glow')) && (p.includes('face') || p.includes('glow') || p.includes('makeup'))) return true;
+  if (t === 'makeup' && (p.includes('makeup') || p.includes('face') || p.includes('lips'))) return true;
+  if (t === 'fragrance' && (p.includes('fragrance') || p.includes('perfume') || p.includes('scent'))) return true;
+
+  return p.includes(t) || t.includes(p);
+}

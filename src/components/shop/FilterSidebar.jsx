@@ -1,7 +1,15 @@
 import { Link } from 'react-router-dom';
-import { categoryConfig } from '../../utils/categoryConfig';
+import { categoryConfig, matchCategory } from '../../utils/categoryConfig';
 
-const categories = ['All', 'Skincare', 'Makeup', 'Fragrance'];
+const categories = [
+  { name: 'All Products', slug: 'All' },
+  { name: 'Hair Care', slug: 'Hair' },
+  { name: 'Skin Care', slug: 'Skin' },
+  { name: 'Body Care', slug: 'Body' },
+  { name: 'Face & Glow', slug: 'Face' },
+  { name: 'Makeup', slug: 'Makeup' },
+  { name: 'Fragrance', slug: 'Fragrance' },
+];
 
 export default function FilterSidebar({ activeCategory, onCategoryChange }) {
   return (
@@ -10,13 +18,13 @@ export default function FilterSidebar({ activeCategory, onCategoryChange }) {
         <h3 className="font-body text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Categories</h3>
         <div className="space-y-1">
           {categories.map((cat) => {
-            const isActive = cat === 'All' ? !activeCategory : activeCategory === cat;
-            const cfg = categoryConfig[cat];
+            const isActive = cat.slug === 'All' ? !activeCategory : matchCategory(activeCategory, cat.slug);
+            const cfg = categoryConfig[cat.slug];
             return (
               <Link
-                key={cat}
-                to={cat === 'All' ? '/shop' : `/shop/${cat}`}
-                onClick={() => onCategoryChange(cat === 'All' ? '' : cat)}
+                key={cat.slug}
+                to={cat.slug === 'All' ? '/shop' : `/shop/${cat.slug}`}
+                onClick={() => onCategoryChange(cat.slug === 'All' ? '' : cat.slug)}
                 className={`flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-body transition-colors ${
                   isActive
                     ? 'bg-gray-900 text-white font-semibold'
@@ -24,9 +32,9 @@ export default function FilterSidebar({ activeCategory, onCategoryChange }) {
                 }`}
               >
                 {cfg && (
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cfg.fill }} />
+                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: cfg.fill }} />
                 )}
-                {cat}
+                {cat.name}
               </Link>
             );
           })}
