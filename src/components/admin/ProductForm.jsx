@@ -94,15 +94,16 @@ export default function ProductForm({ product, onSubmit, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const validImages = form.images.filter(Boolean);
     onSubmit({
       id: product?.id || Date.now().toString(),
       name: form.name,
       description: form.description,
-      price: parseFloat(form.price),
-      originalPrice: form.originalPrice ? parseFloat(form.originalPrice) : undefined,
-      category: form.category,
-      stock: parseInt(form.stock, 10),
-      images: form.images.filter(Boolean),
+      price: parseFloat(form.price) || 0,
+      originalPrice: form.originalPrice ? (parseFloat(form.originalPrice) || undefined) : undefined,
+      category: form.category || 'Skin',
+      stock: parseInt(form.stock, 10) || 0,
+      images: validImages.length > 0 ? validImages : ['https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80'],
       rating: product?.rating || 4.5,
       reviews: product?.reviews || 0,
       featured: product?.featured || false,
