@@ -48,47 +48,53 @@ export default function ProductForm({ product, onSubmit, onClose }) {
   };
 
   const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
 
     setUploading(true);
     setUploadError('');
 
     try {
-      const imageUrl = await uploadToCloudinary(file);
-      setForm(f => ({
-        ...f,
-        images: f.images[0] === '' && f.images.length === 1
-          ? [imageUrl]
-          : [...f.images.filter(img => img !== ''), imageUrl]
-      }));
+      const uploadPromises = files.map(file => uploadToCloudinary(file));
+      const imageUrls = await Promise.all(uploadPromises);
+
+      setForm(f => {
+        const existingImages = f.images.filter(img => img !== '');
+        return { ...f, images: [...existingImages, ...imageUrls] };
+      });
     } catch (err) {
       console.warn('Cloudinary upload fallback activated:', err.message);
-      setUploadError('Cloudinary config missing or failed. Saved as local compressed image.');
+      setUploadError('Cloudinary config missing or failed. Saved as local compressed images.');
       
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX = 800;
-          let w = img.width, h = img.height;
-          if (w > h) { if (w > MAX) { h *= MAX / w; w = MAX; } }
-          else { if (h > MAX) { w *= MAX / h; h = MAX; } }
-          canvas.width = w; canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-          setForm(f => ({
-            ...f,
-            images: f.images[0] === '' && f.images.length === 1 ? [dataUrl] : [...f.images.filter(i => i !== ''), dataUrl]
-          }));
-        };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
+      const dataUrls = await Promise.all(files.map(file => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const MAX = 800;
+              let w = img.width, h = img.height;
+              if (w > h) { if (w > MAX) { h *= MAX / w; w = MAX; } }
+              else { if (h > MAX) { w *= MAX / h; h = MAX; } }
+              canvas.width = w; canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              resolve(canvas.toDataURL('image/jpeg', 0.75));
+            };
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }));
+
+      setForm(f => {
+        const existingImages = f.images.filter(img => img !== '');
+        return { ...f, images: [...existingImages, ...dataUrls] };
+      });
     } finally {
       setUploading(false);
+      e.target.value = '';
     }
   };
 
@@ -191,7 +197,7 @@ export default function ProductForm({ product, onSubmit, onClose }) {
               </button>
               <label className={`flex items-center gap-2 text-sm font-body ${uploading ? 'text-amber-400 animate-pulse' : 'text-gray-500 hover:text-gray-900'} transition-colors cursor-pointer`}>
                 <Upload size={16} /> {uploading ? 'Uploading to Cloudinary…' : 'Upload Image (Cloudinary)'}
-                <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
+                <input type="file" multiple accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
               </label>
             </div>
             {uploadError && (
