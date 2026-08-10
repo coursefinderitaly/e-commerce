@@ -56,7 +56,14 @@ export function ProductsProvider({ children }) {
         if (contentType && contentType.includes('application/json')) {
           const data = await response.json();
           if (Array.isArray(data) && data.length > 0) {
-            updateProductsState(data);
+            // Merge API data with current local products to never lose un-synced products
+            setProducts(currentProducts => {
+              const merged = mergeProducts(data, currentProducts);
+              try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+              } catch (e) {}
+              return merged;
+            });
           }
         }
       }

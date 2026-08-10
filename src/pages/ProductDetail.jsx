@@ -37,7 +37,7 @@ export default function ProductDetail() {
 
   const handleAdd = () => {
     for (let i = 0; i < quantity; i++) {
-      addItem({ id: product.id, name: product.name, price: product.price, image: product.images[0], category: product.category });
+      addItem({ id: product.id, name: product.name, price: product.price, image: product.images?.[0] || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80', category: product.category });
     }
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
@@ -63,7 +63,7 @@ export default function ProductDetail() {
               className="aspect-[4/5] rounded-2xl overflow-hidden bg-transparent"
             >
               <OptimizedImage
-                src={product.images[selectedImage]}
+                src={product.images?.[selectedImage] || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80'}
                 alt={product.name}
                 width={800}
                 quality={80}
@@ -72,7 +72,7 @@ export default function ProductDetail() {
                 className="w-full h-full object-cover"
               />
             </motion.div>
-            {product.images.length > 1 && (
+            {(product.images || []).length > 1 && (
               <div className="flex gap-3">
                 {product.images.map((img, i) => (
                   <button
@@ -82,7 +82,7 @@ export default function ProductDetail() {
                       i === selectedImage ? 'border-gray-200' : 'border-transparent hover:border-gray-200'
                     }`}
                   >
-                    <OptimizedImage src={img} alt="" width={160} containerClassName="w-full h-full" className="w-full h-full object-cover" />
+                    <OptimizedImage src={img || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80'} alt="" width={160} containerClassName="w-full h-full" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

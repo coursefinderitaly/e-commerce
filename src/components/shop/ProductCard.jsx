@@ -22,7 +22,7 @@ export default function ProductCard({ product }) {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.images[0],
+      image: product.images?.[0] || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
       category: product.category,
     });
     setAdded(true);
@@ -42,7 +42,7 @@ export default function ProductCard({ product }) {
         {/* Product Image Box */}
         <div className="relative overflow-hidden aspect-square bg-gray-50 flex-shrink-0">
           <OptimizedImage
-            src={product.images[0]}
+            src={product.images?.[0] || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80'}
             alt={product.name}
             width={450}
             quality={80}
