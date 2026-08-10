@@ -226,6 +226,8 @@ export default function Auth() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
+                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                    title="Please enter a valid email address format (e.g. name@gmail.com)"
                     required
                     className="w-full bg-gray-50 hover:bg-gray-100/50 focus:bg-white text-gray-900 text-sm pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
                   />
@@ -233,7 +235,7 @@ export default function Auth() {
                 </div>
               </div>
 
-              {/* Sign Up: Phone Number (Optional) */}
+              {/* Sign Up: Phone Number */}
               {!isLogin && (
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
@@ -243,8 +245,9 @@ export default function Auth() {
                     <input
                       type="tel"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+1 (555) 000-0000"
+                      onChange={(e) => setPhone(e.target.value.replace(/[^0-9+]/g, ''))}
+                      placeholder="+15550000000"
+                      maxLength="15"
                       className="w-full bg-gray-50 hover:bg-gray-100/50 focus:bg-white text-gray-900 text-sm pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
                     />
                     <Phone size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
