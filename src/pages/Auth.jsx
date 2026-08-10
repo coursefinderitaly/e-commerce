@@ -237,7 +237,7 @@ export default function Auth() {
               {!isLogin && (
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
-                    Mobile Number <span className="text-gray-400 font-normal">(Optional for delivery updates)</span>
+                    Mobile Number
                   </label>
                   <div className="relative">
                     <input
