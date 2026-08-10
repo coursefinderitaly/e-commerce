@@ -91,7 +91,10 @@ export function ProductsProvider({ children }) {
       const method = isEdit ? 'PUT' : 'POST';
       await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-admin-token': 'glamaura-secure-admin'
+        },
         body: JSON.stringify(productData)
       });
     } catch (err) {
@@ -108,7 +111,10 @@ export function ProductsProvider({ children }) {
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '';
       await fetch(`${baseUrl}/api/products/${productId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'x-admin-token': 'glamaura-secure-admin'
+        }
       });
     } catch (err) {
       console.warn('Backend API delete notice:', err.message);

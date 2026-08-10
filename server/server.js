@@ -13,8 +13,17 @@ const formatProduct = (row) => ({
   ...row,
   images: row.images ? JSON.parse(row.images) : [],
   tags: row.tags ? JSON.parse(row.tags) : [],
-  featured: Boolean(row.featured)
 });
+
+// Basic Security Middleware for Admin routes
+const adminAuth = (req, res, next) => {
+  // In a real app, use JWT. For now, check a custom header to prevent random access
+  const token = req.headers['x-admin-token'];
+  if (token !== 'glamaura-secure-admin') {
+    return res.status(403).json({ error: 'Unauthorized admin access' });
+  }
+  next();
+};
 
 // GET all products
 app.get('/api/products', (req, res) => {
@@ -42,8 +51,8 @@ app.get('/api/products/:id', (req, res) => {
   });
 });
 
-// POST add a product
-app.post('/api/products', (req, res) => {
+// POST add a product (Secure)
+app.post('/api/products', adminAuth, (req, res) => {
   const { id, name, description, price, originalPrice, category, stock, images, rating, reviews, featured, tags } = req.body;
   
   const sql = `INSERT INTO products (id, name, description, price, originalPrice, category, stock, images, rating, reviews, featured, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -61,8 +70,8 @@ app.post('/api/products', (req, res) => {
   });
 });
 
-// PUT update a product
-app.put('/api/products/:id', (req, res) => {
+// PUT update a product (Secure)
+app.put('/api/products/:id', adminAuth, (req, res) => {
   const { name, description, price, originalPrice, category, stock, images, rating, reviews, featured, tags } = req.body;
   
   const sql = `UPDATE products SET name = ?, description = ?, price = ?, originalPrice = ?, category = ?, stock = ?, images = ?, rating = ?, reviews = ?, featured = ?, tags = ? WHERE id = ?`;
@@ -80,14 +89,81 @@ app.put('/api/products/:id', (req, res) => {
   });
 });
 
-// DELETE a product
-app.delete('/api/products/:id', (req, res) => {
+// DELETE a product (Secure)
+app.delete('/api/products/:id', adminAuth, (req, res) => {
   db.run('DELETE FROM products WHERE id = ?', [req.params.id], function(err) {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
     }
     res.json({ message: 'Product deleted successfully', changes: this.changes });
+  });
+});
+
+// GET all orders (Secure)
+app.get('/api/orders', adminAuth, (req, res) => {
+  db.all('SELECT * FROM orders ORDER BY created_at DESC', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows.map(row => ({
+      ...row,
+      shipping_details: JSON.parse(row.shipping_details),
+      items: JSON.parse(row.items)
+    })));
+  });
+});
+
+// POST secure checkout order
+app.post('/api/orders', (req, res) => {
+  const { customer_email, shipping_details, items } = req.body;
+  
+  if (!items || !items.length) {
+    return res.status(400).json({ error: 'Order must contain items' });
+  }
+
+  // Fetch prices securely from DB to prevent tampering
+  const placeholders = items.map(() => '?').join(',');
+  const itemIds = items.map(item => item.id);
+  
+  db.all(`SELECT id, name, price FROM products WHERE id IN (${placeholders})`, itemIds, (err, dbProducts) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    
+    let subtotal = 0;
+    const validatedItems = [];
+    
+    items.forEach(cartItem => {
+      const dbProduct = dbProducts.find(p => String(p.id) === String(cartItem.id));
+      if (dbProduct) {
+        // Use DB PRICE, not frontend price!
+        subtotal += dbProduct.price * cartItem.quantity;
+        validatedItems.push({
+          id: dbProduct.id,
+          name: dbProduct.name,
+          price: dbProduct.price,
+          quantity: cartItem.quantity
+        });
+      }
+    });
+
+    if (validatedItems.length === 0) {
+      return res.status(400).json({ error: 'No valid products found' });
+    }
+
+    const shipping_cost = subtotal > 200 ? 0 : 12.99;
+    const tax = subtotal * 0.08;
+    const total = subtotal + shipping_cost + tax;
+    
+    const orderId = 'GA-' + Date.now().toString(36).toUpperCase();
+    
+    const sql = `INSERT INTO orders (id, customer_email, shipping_details, items, subtotal, shipping_cost, tax, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const params = [
+      orderId, customer_email, JSON.stringify(shipping_details), JSON.stringify(validatedItems),
+      subtotal, shipping_cost, tax, total
+    ];
+
+    db.run(sql, params, function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.status(201).json({ message: 'Order created securely', orderId, total });
+    });
   });
 });
 

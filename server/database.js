@@ -2,12 +2,20 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const dbPath = path.resolve(__dirname, 'database.sqlite');
+const dataDir = path.resolve(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+// Ensure the live database is stored in a separate directory so it can be gitignored
+const dbPath = path.resolve(dataDir, 'live_database.sqlite');
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Error opening database', err.message);
   } else {
-    console.log('Connected to the SQLite database.');
+    console.log('Connected to the live SQLite database.');
+    
+    // Create products table
     db.run(`CREATE TABLE IF NOT EXISTS products (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -22,11 +30,24 @@ const db = new sqlite3.Database(dbPath, (err) => {
       featured BOOLEAN,
       tags TEXT
     )`, (err) => {
-      if (err) {
-        console.error('Error creating table', err.message);
-      } else {
-        seedDatabase();
-      }
+      if (err) console.error('Error creating products table', err.message);
+      else seedDatabase();
+    });
+
+    // Create secure orders table
+    db.run(`CREATE TABLE IF NOT EXISTS orders (
+      id TEXT PRIMARY KEY,
+      customer_email TEXT NOT NULL,
+      shipping_details TEXT NOT NULL,
+      items TEXT NOT NULL,
+      subtotal REAL NOT NULL,
+      shipping_cost REAL NOT NULL,
+      tax REAL NOT NULL,
+      total REAL NOT NULL,
+      status TEXT DEFAULT 'pending',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+      if (err) console.error('Error creating orders table', err.message);
     });
   }
 });
