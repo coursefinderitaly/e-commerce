@@ -57,10 +57,11 @@ export default function ProductTable({ products, onEdit, onDelete, categories })
             </thead>
             <tbody>
               {filtered.map((product, i) => {
-                const cfg = categoryConfig[product.category];
+                const cfg = categoryConfig[product.category] || { fill: '#D97706', bg: 'bg-amber-100', text: 'text-amber-800' };
+                const imageSrc = product.images?.[0] || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80';
                 return (
                   <motion.tr
-                    key={product.id}
+                    key={product.id || i}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: i * 0.03 }}
@@ -68,14 +69,14 @@ export default function ProductTable({ products, onEdit, onDelete, categories })
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <OptimizedImage src={product.images[0]} alt={product.name} width={100} containerClassName="w-10 h-12 rounded flex-shrink-0" className="w-full h-full object-cover" />
+                        <OptimizedImage src={imageSrc} alt={product.name} width={100} containerClassName="w-10 h-12 rounded flex-shrink-0" className="w-full h-full object-cover" />
                         <span className="font-body text-sm text-gray-900 font-medium">{product.name}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
                       <span
                         className="inline-block px-2.5 py-1 rounded-full text-xs font-mono font-semibold"
-                        style={{ backgroundColor: `${cfg.fill}15`, color: cfg.fill }}
+                        style={{ backgroundColor: `${cfg.fill || '#D97706'}15`, color: cfg.fill || '#D97706' }}
                       >
                         {product.category}
                       </span>

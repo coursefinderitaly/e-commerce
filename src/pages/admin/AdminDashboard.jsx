@@ -18,7 +18,7 @@ export default function AdminDashboard() {
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
-  const { products, fetchProducts, loading: isLoading } = useProducts();
+  const { products, fetchProducts, saveProduct, deleteProduct, loading: isLoading } = useProducts();
   const [editingProduct, setEditingProduct] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -53,23 +53,11 @@ export default function AdminDashboard() {
 
   const handleSaveProduct = async (productData) => {
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || '';
-      const url = editingProduct ? `${baseUrl}/api/products/${productData.id}` : `${baseUrl}/api/products`;
-      const method = editingProduct ? 'PUT' : 'POST';
-      
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productData)
-      });
-      
-      if (!response.ok) throw new Error('Failed to save product');
-      
-      await fetchProducts(); // Refresh the list from backend
+      await saveProduct(productData, !!editingProduct);
       setShowForm(false);
       setEditingProduct(null);
     } catch (error) {
-      console.error("API error:", error);
+      console.error("Save error:", error);
       alert("Failed to save product. Please try again.");
     }
   };
@@ -85,17 +73,12 @@ export default function AdminDashboard() {
 
   const confirmDelete = async () => {
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${baseUrl}/api/products/${deleteConfirm.id}`, {
-        method: 'DELETE'
-      });
-      
-      if (!response.ok) throw new Error('Failed to delete product');
-      
-      await fetchProducts();
-      setDeleteConfirm(null);
+      if (deleteConfirm) {
+        await deleteProduct(deleteConfirm.id);
+        setDeleteConfirm(null);
+      }
     } catch (error) {
-      console.error("API error:", error);
+      console.error("Delete error:", error);
       alert("Failed to delete product. Please try again.");
     }
   };

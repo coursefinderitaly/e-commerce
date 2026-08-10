@@ -6,12 +6,12 @@ import Input from '../ui/Input';
 
 import { uploadToCloudinary } from '../../utils/cloudinary';
 
-const categories = ['Skincare', 'Makeup', 'Fragrance'];
+const categories = ['Hair', 'Skin', 'Body', 'Face', 'Skincare', 'Makeup', 'Fragrance'];
 
 export default function ProductForm({ product, onSubmit, onClose }) {
   const [form, setForm] = useState({
     name: '', description: '', price: '', originalPrice: '',
-    category: 'Skincare', stock: '', images: [''],
+    category: 'Skin', stock: '', images: [''],
   });
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
