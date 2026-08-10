@@ -18,9 +18,9 @@ export default function Cart() {
         className="min-h-screen bg-transparent pt-24 pb-16 flex items-center justify-center"
       >
         <div className="text-center max-w-md mx-auto px-4">
-          <ShoppingBag size={64} className="mx-auto text-paper/20 mb-6" />
-          <h1 className="font-display text-3xl text-paper mb-2">Your bag is empty</h1>
-          <p className="font-body text-paper/50 mb-8">Time to find something you love.</p>
+          <ShoppingBag size={64} className="mx-auto text-gray-900 mb-6" />
+          <h1 className="font-display text-3xl text-gray-900 mb-2">Your bag is empty</h1>
+          <p className="font-body text-gray-500 mb-8">Time to find something you love.</p>
           <Link to="/shop">
             <Button variant="primary" size="lg">
               <ArrowLeft size={18} /> Start Shopping
@@ -40,8 +40,8 @@ export default function Cart() {
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="font-display text-3xl md:text-4xl text-paper">Your Bag ({items.length})</h1>
-          <button onClick={clearCart} className="text-sm font-body text-paper/40 hover:text-red-500 transition-colors">
+          <h1 className="font-display text-3xl md:text-4xl text-gray-900">Your Bag ({items.length})</h1>
+          <button onClick={clearCart} className="text-sm font-body text-gray-500 hover:text-red-500 transition-colors">
             Clear all
           </button>
         </div>
@@ -55,28 +55,28 @@ export default function Cart() {
                 layout
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-transparent rounded-xl p-4 border border-paper/5 flex gap-4"
+                className="bg-transparent rounded-xl p-4 border border-gray-100 flex gap-4"
               >
                 <OptimizedImage src={item.image} alt={item.name} width={200} containerClassName="w-24 h-28 rounded-lg flex-shrink-0" className="w-full h-full object-cover" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="font-body font-semibold text-paper">{item.name}</h3>
+                      <h3 className="font-body font-semibold text-gray-900">{item.name}</h3>
                       <p className="text-xs font-medium" style={{ color: cfg.fill }}>{item.category}</p>
                     </div>
-                    <p className="font-body font-semibold text-paper">{formatCurrency(item.price * item.quantity)}</p>
+                    <p className="font-body font-semibold text-gray-900">{formatCurrency(item.price * item.quantity)}</p>
                   </div>
                   <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center border border-paper/20 rounded-lg">
-                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2 hover:bg-paper/10">
+                    <div className="flex items-center border border-gray-200 rounded-lg">
+                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2 hover:bg-gray-100">
                         <Minus size={14} />
                       </button>
                       <span className="px-4 font-mono text-sm">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:bg-paper/10">
+                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:bg-gray-100">
                         <Plus size={14} />
                       </button>
                     </div>
-                    <button onClick={() => removeItem(item.id)} className="text-paper/30 hover:text-red-500 transition-colors p-1">
+                    <button onClick={() => removeItem(item.id)} className="text-gray-900 hover:text-red-500 transition-colors p-1">
                       <Trash2 size={18} />
                     </button>
                   </div>
@@ -86,17 +86,17 @@ export default function Cart() {
           })}
         </div>
 
-        <div className="mt-8 bg-transparent rounded-xl p-6 border border-paper/5">
+        <div className="mt-8 bg-transparent rounded-xl p-6 border border-gray-100">
           <div className="space-y-2 mb-4">
-            <div className="flex justify-between font-body text-sm text-paper/60">
+            <div className="flex justify-between font-body text-sm text-gray-600">
               <span>Subtotal</span>
               <span>{formatCurrency(subtotal)}</span>
             </div>
-            <div className="flex justify-between font-body text-sm text-paper/60">
+            <div className="flex justify-between font-body text-sm text-gray-600">
               <span>Shipping</span>
               <span>Calculated at checkout</span>
             </div>
-            <div className="border-t border-paper/10 pt-2 flex justify-between font-body font-semibold text-paper">
+            <div className="border-t border-gray-100 pt-2 flex justify-between font-body font-semibold text-gray-900">
               <span>Estimated Total</span>
               <span>{formatCurrency(subtotal)}</span>
             </div>
@@ -106,7 +106,7 @@ export default function Cart() {
               Proceed to Checkout
             </Button>
           </Link>
-          <Link to="/shop" className="block text-center text-sm font-body text-paper/40 hover:text-paper mt-3 transition-colors">
+          <Link to="/shop" className="block text-center text-sm font-body text-gray-500 hover:text-gray-900 mt-3 transition-colors">
             Continue Shopping
           </Link>
         </div>

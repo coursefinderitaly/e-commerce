@@ -8,7 +8,7 @@ import Input from '../../components/ui/Input';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-  const { login, user } = useAuth();
+  const { loginAdmin, user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
@@ -27,7 +27,7 @@ export default function AdminLogin() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
-    const result = login(email, password);
+    const result = loginAdmin(email, password);
     if (result.success) {
       navigate('/admin/dashboard');
     } else {
@@ -42,13 +42,13 @@ export default function AdminLogin() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="bg-transparent rounded-2xl p-8 border border-paper/10">
+        <div className="bg-transparent rounded-2xl p-8 border border-gray-100">
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-transparent rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Lock size={28} className="text-bone" />
+              <Lock size={28} className="text-gray-900" />
             </div>
-            <h1 className="font-display text-2xl text-paper">Admin Login</h1>
-            <p className="font-body text-sm text-paper/50 mt-1">Sign in to manage your store</p>
+            <h1 className="font-display text-2xl text-gray-900">Admin Login</h1>
+            <p className="font-body text-sm text-gray-500 mt-1">Sign in to manage your store</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -70,7 +70,7 @@ export default function AdminLogin() {
               <button
                 type="button"
                 onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-[38px] text-paper/30 hover:text-paper/60"
+                className="absolute right-3 top-[38px] text-gray-900 hover:text-gray-600"
               >
                 {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>

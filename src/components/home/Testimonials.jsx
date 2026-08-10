@@ -1,98 +1,128 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-import { useScrollReveal } from '../../hooks/useScrollReveal';
+import { Star, CheckCircle, Heart, Award, Sparkles } from 'lucide-react';
 
-const testimonials = [
+const reviews = [
   {
-    name: 'Sophia Chen',
+    id: 1,
+    name: 'Ananya Sharma',
     role: 'Verified Buyer',
-    text: 'The quality of their cashmere is unmatched. I live in my turtleneck from the moment the temperature drops. Worth every penny.',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+    product: 'Vitamin C Radiance Glow Serum',
+    text: 'Literally in love with this serum! Within just 10 days, my dark spots faded and my skin has this glass-skin glow. Best skincare purchase of the year.',
     rating: 5,
+    date: '3 days ago',
   },
   {
-    name: 'Marcus Rivera',
+    id: 2,
+    name: 'Rohan Mehta',
     role: 'Verified Buyer',
-    text: 'I was skeptical about ordering cosmetics online, but the Radiance Serum has genuinely transformed my skincare routine. Fast shipping too.',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+    product: 'Botanical Hair Repair Oil',
+    text: 'My hair was extremely frizzy from constant heat styling. Two drops of this oil after washing makes it feel like I just stepped out of a luxury salon.',
     rating: 5,
+    date: '1 week ago',
   },
   {
-    name: 'Aisha Patel',
-    role: 'Beauty Influencer',
-    text: 'Glam AURA has become my go-to for statement pieces. The Silk Evening Gown got me so many compliments at the gala. Absolutely stunning.',
-    rating: 5,
-  },
-  {
-    name: 'Emma Larsson',
+    id: 3,
+    name: 'Pooja Iyer',
     role: 'Verified Buyer',
-    text: 'Finally, a cosmetics store where skincare and makeup all hit the same high standard. The packaging alone is a work of art.',
-    rating: 4,
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80',
+    product: 'Whipped Vanilla Body Soufflé',
+    text: 'The smell is heavenly! It melts right into the skin without being greasy at all. Everyone asks me what perfume I am wearing. Highly recommended!',
+    rating: 5,
+    date: '2 weeks ago',
   },
 ];
 
+const stats = [
+  { value: '50K+', label: 'Happy Customers' },
+  { value: '4.9/5', label: 'Average Product Rating' },
+  { value: '98%', label: 'Repeat Customer Rate' },
+  { value: '100%', label: 'Toxin-Free & Vegan' },
+];
+
 export default function Testimonials() {
-  const [current, setCurrent] = useState(0);
-  const { ref, isVisible } = useScrollReveal();
-
-  const next = () => setCurrent((c) => (c + 1) % testimonials.length);
-  const prev = () => setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length);
-
   return (
-    <section ref={ref} className="py-24 bg-transparent">
+    <section className="py-12 md:py-16 bg-gray-50 border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
-          <p className="font-body text-paper/40 text-sm tracking-[0.2em] uppercase mb-3">Real Reviews</p>
-          <h2 className="font-display text-4xl md:text-5xl text-paper">Loved by Thousands</h2>
-        </motion.div>
-
-        <div className="relative max-w-2xl mx-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
-              className="bg-transparent rounded-2xl p-8 md:p-10 shadow-sm border border-paper/5 text-center"
-            >
-              <div className="flex justify-center gap-1 mb-5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={18} className={i < testimonials[current].rating ? 'text-amber-400 fill-amber-400' : 'text-paper/10'} />
-                ))}
-              </div>
-              <blockquote className="font-display text-xl md:text-2xl text-paper mb-6 leading-relaxed">
-                &ldquo;{testimonials[current].text}&rdquo;
-              </blockquote>
-              <div>
-                <p className="font-body font-semibold text-paper">{testimonials[current].name}</p>
-                <p className="font-body text-sm text-paper/40">{testimonials[current].role}</p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          <div className="flex justify-center gap-3 mt-8">
-            <button onClick={prev} className="p-2 border border-paper/20 rounded-lg hover:bg-paper/10 transition-colors">
-              <ChevronLeft size={20} />
-            </button>
-            <div className="flex items-center gap-2">
-              {testimonials.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrent(i)}
-                  className={`w-2 h-2 rounded-full transition-all ${i === current ? 'bg-transparent w-6' : 'bg-paper/20'}`}
-                />
-              ))}
-            </div>
-            <button onClick={next} className="p-2 border border-paper/20 rounded-lg hover:bg-paper/10 transition-colors">
-              <ChevronRight size={20} />
-            </button>
+        
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">
+            <Sparkles size={14} className="text-yellow-500" />
+            Social Proof
           </div>
+          <h2 className="text-2xl sm:text-4xl font-display font-black text-gray-900 mb-3">
+            Loved by Over 50,000+ Beauty Lovers
+          </h2>
+          <p className="text-sm text-gray-600">
+            Real reviews from real people who transformed their hair and skin with Glam Aura.
+          </p>
         </div>
+
+        {/* 3 Review Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {reviews.map((rev) => (
+            <div
+              key={rev.id}
+              className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition-shadow"
+            >
+              <div>
+                {/* Stars & Date */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex gap-1 text-amber-400">
+                    {Array.from({ length: rev.rating }).map((_, i) => (
+                      <Star key={i} size={16} className="fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[11px] text-gray-400 font-medium">{rev.date}</span>
+                </div>
+
+                {/* Review Text */}
+                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-6 italic">
+                  &ldquo;{rev.text}&rdquo;
+                </p>
+              </div>
+
+              {/* User Info & Product Tag */}
+              <div className="pt-4 border-t border-gray-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <img
+                    src={rev.avatar}
+                    alt={rev.name}
+                    className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                  />
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-gray-900 flex items-center gap-1">
+                      {rev.name}
+                      <CheckCircle size={14} className="text-emerald-600 fill-emerald-100" />
+                    </h4>
+                    <span className="text-[11px] text-emerald-700 font-semibold">{rev.role}</span>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg px-2.5 py-1.5 text-[11px] text-gray-600 font-medium flex items-center gap-1.5">
+                  <Award size={12} className="text-gray-400" />
+                  <span className="truncate">Bought: {rev.product}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Stats Grid */}
+        <div className="bg-black text-white rounded-3xl p-6 sm:p-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center shadow-lg">
+          {stats.map((stat, i) => (
+            <div key={i} className="flex flex-col items-center justify-center">
+              <span className="text-2xl sm:text-4xl font-display font-black text-yellow-400 mb-1">
+                {stat.value}
+              </span>
+              <span className="text-xs text-gray-300 font-medium tracking-wide">
+                {stat.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );

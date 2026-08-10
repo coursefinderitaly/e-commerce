@@ -52,7 +52,7 @@ export default function OptimizedImage({
     return (
       <div className={`relative overflow-hidden ${containerClassName}`}>
         {!isLoaded && !hasError && (
-          <div className="absolute inset-0 bg-paper/10 animate-pulse z-0 rounded-[inherit]" />
+          <div className="absolute inset-0 bg-gray-100 animate-pulse z-0 rounded-[inherit]" />
         )}
         <img
           ref={imgRef}

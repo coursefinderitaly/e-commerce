@@ -1,150 +1,172 @@
-import { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronDown, ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import Button from '../ui/Button';
-import { useProducts } from '../../context/ProductsContext';
-import { formatCurrency } from '../../utils/formatCurrency';
+import { ChevronLeft, ChevronRight, Sparkles, ArrowRight } from 'lucide-react';
 
-import OptimizedImage from '../ui/OptimizedImage';
-
-function PigmentBloom({ color, delay, x, y, size }) {
-  return (
-    <motion.div
-      className="absolute rounded-full blur-[100px] pointer-events-none mix-blend-screen"
-      style={{ backgroundColor: color }}
-      initial={{ x: 0, y: 0, opacity: 0.1, width: size, height: size }}
-      animate={{
-        x: [0, x, -x * 0.5, 0],
-        y: [0, y, -y * 0.3, 0],
-        opacity: [0.1, 0.3, 0.2, 0.1],
-      }}
-      transition={{ duration: 15 + delay, repeat: Infinity, ease: 'easeInOut' }}
-    />
-  );
-}
+const heroSlides = [
+  {
+    id: 1,
+    badge: '★ SUMMER BEAUTY FESTIVAL',
+    title: 'Unlock Your Natural Radiant Glow',
+    description: 'Dermatologist formulated skincare & hair remedies with pure active botanicals.',
+    discount: 'FLAT 30% OFF',
+    buttonText: 'Shop Best-Sellers',
+    link: '/shop/Skin',
+    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1600&q=80',
+  },
+  {
+    id: 2,
+    badge: '★ NEW LAUNCH',
+    title: 'Pure Hair Revival & Peptide Therapy',
+    description: 'Transform dull, dry hair with salon-grade rosemary & argan restoration oils.',
+    discount: 'BUY 1 GET 1 FREE',
+    buttonText: 'Explore Hair Care',
+    link: '/shop/Hair',
+    image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=1600&q=80',
+  },
+  {
+    id: 3,
+    badge: '★ LUXURY SPA AT HOME',
+    title: 'Indulgent Body Butter & Polishing Scrubs',
+    description: '24-hour deep hydration infused with whipped Madagascar vanilla & shea butter.',
+    discount: 'UP TO 40% OFF',
+    buttonText: 'Discover Body Care',
+    link: '/shop/Body',
+    image: 'https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?auto=format&fit=crop&w=1600&q=80',
+  },
+];
 
 export default function Hero() {
-  const heroRef = useRef(null);
-  const { products } = useProducts();
-  const mobilePreviewProducts = products.filter(p => p.featured).slice(0, 4);
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev === heroSlides.length - 1 ? 0 : prev + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextSlide = () => setCurrent((prev) => (prev === heroSlides.length - 1 ? 0 : prev + 1));
+  const prevSlide = () => setCurrent((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1));
 
   return (
-    <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-transparent">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12">
+    <section className="bg-white py-4 md:py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Left Column: Text */}
-        <div className="flex flex-col items-center lg:items-start text-center lg:text-left order-last lg:order-first">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="font-body text-white font-bold text-xs md:text-sm tracking-[0.4em] uppercase mb-4 [text-shadow:_0_2px_10px_rgba(0,0,0,0.8)]"
-          >
-            Welcome to the New Era of Beauty
-          </motion.p>
+        {/* Main Banner Slider */}
+        <div className="relative h-[340px] sm:h-[420px] md:h-[480px] lg:h-[520px] w-full rounded-2xl md:rounded-3xl overflow-hidden bg-gray-900 shadow-md group">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={current}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0"
+            >
+              {/* Background Image with Gradient Overlay */}
+              <img
+                src={heroSlides[current].image}
+                alt={heroSlides[current].title}
+                className="w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/20" />
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white leading-tight mb-6 [text-shadow:_0_4px_30px_rgba(0,0,0,0.8)]"
-          >
-            Radiate Your
-            <br />
-            <span className="text-white italic font-light">
-              True Inner Beauty.
-            </span>
-          </motion.h1>
+              {/* Text & CTA Content */}
+              <div className="absolute inset-0 flex items-center">
+                <div className="max-w-xl px-6 sm:px-10 md:px-16 text-white">
+                  
+                  {/* Promo Badge */}
+                  <motion.div
+                    initial={{ y: 15, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                    className="inline-flex items-center gap-1.5 bg-yellow-400 text-black text-[10px] sm:text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider mb-4 shadow-sm"
+                  >
+                    <Sparkles size={13} className="fill-black" />
+                    <span>{heroSlides[current].badge}</span>
+                  </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="font-body text-white/95 font-medium text-lg md:text-xl max-w-xl mb-10 leading-relaxed [text-shadow:_0_2px_15px_rgba(0,0,0,0.8)]"
-          >
-            Discover premium skincare, vibrant makeup, and signature fragrances — crafted to celebrate your unique beauty. Experience pure, minimalist cosmetics.
-          </motion.p>
+                  {/* Title (Clean font without noise artifacts) */}
+                  <motion.h1
+                    initial={{ y: 15, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-[1.15] mb-3 sm:mb-4 text-white tracking-tight"
+                  >
+                    {heroSlides[current].title}
+                  </motion.h1>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
-            className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
-          >
-            <Link to="/shop" className="w-full sm:w-auto">
-              <Button variant="primary" size="xl" className="w-full sm:w-auto bg-paper text-ink hover:bg-paper/90 rounded-full px-10 shadow-[0_0_20px_rgba(243,241,236,0.15)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(243,241,236,0.25)] hover:-translate-y-1">
-                Shop New Arrivals
-                <ArrowRight size={20} className="ml-2" />
-              </Button>
-            </Link>
-            <Link to="/shop" className="w-full sm:w-auto">
-              <Button variant="secondary" size="xl" className="w-full sm:w-auto border-paper/30 text-paper hover:bg-paper hover:text-ink rounded-full px-10 transition-all duration-300 hover:-translate-y-1">
-                Explore Collections
-              </Button>
-            </Link>
-          </motion.div>
+                  {/* Description */}
+                  <motion.p
+                    initial={{ y: 15, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-xs sm:text-sm md:text-base text-gray-200 font-medium mb-6 line-clamp-2 max-w-md leading-relaxed"
+                  >
+                    {heroSlides[current].description}
+                  </motion.p>
 
-          {/* Mobile Only: Product Preview */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1 }}
-            className="flex md:hidden overflow-x-auto w-full gap-4 snap-x snap-mandatory mt-10 pb-4 no-scrollbar"
-          >
-            {mobilePreviewProducts.map((p) => (
-              <Link key={p.id} to="/shop" className="snap-center shrink-0 w-[140px] h-[180px] relative rounded-2xl overflow-hidden group shadow-xl">
-                <OptimizedImage
-                  src={p.images[0]}
-                  alt={p.name}
-                  width={250}
-                  containerClassName="w-full h-full"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-3">
-                  <p className="text-white font-display text-sm leading-tight line-clamp-2 mb-1 drop-shadow-md">{p.name}</p>
-                  <p className="text-white/90 font-body text-xs drop-shadow-md">{formatCurrency(p.price)}</p>
+                  {/* CTA & Offer Tag */}
+                  <motion.div
+                    initial={{ y: 15, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="flex flex-wrap items-center gap-4"
+                  >
+                    <Link
+                      to={heroSlides[current].link}
+                      className="inline-flex items-center gap-2 bg-white text-black font-bold uppercase tracking-wider text-xs sm:text-sm px-6 sm:px-8 py-3.5 rounded-full hover:bg-yellow-400 hover:text-black transition-all transform hover:scale-105 shadow-lg"
+                    >
+                      <span>{heroSlides[current].buttonText}</span>
+                      <ArrowRight size={16} />
+                    </Link>
+
+                    <div className="bg-white/15 backdrop-blur-md border border-white/30 text-white font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-full">
+                      {heroSlides[current].discount}
+                    </div>
+                  </motion.div>
+
                 </div>
-              </Link>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevSlide}
+            aria-label="Previous Slide"
+            className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/30 hover:bg-white text-black backdrop-blur-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 z-20 shadow-md"
+          >
+            <ChevronLeft size={22} strokeWidth={2.5} />
+          </button>
+          <button
+            onClick={nextSlide}
+            aria-label="Next Slide"
+            className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/30 hover:bg-white text-black backdrop-blur-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 z-20 shadow-md"
+          >
+            <ChevronRight size={22} strokeWidth={2.5} />
+          </button>
+
+          {/* Slide Indicators */}
+          <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+            {heroSlides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrent(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                className={`transition-all duration-300 rounded-full ${
+                  current === idx
+                    ? 'w-8 h-2 bg-yellow-400'
+                    : 'w-2 h-2 bg-white/50 hover:bg-white'
+                }`}
+              />
             ))}
-          </motion.div>
+          </div>
+
         </div>
 
-        {/* Right Column: Exact company logo */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, x: 20 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="relative hidden md:flex justify-center lg:justify-end order-first lg:order-last mb-12 lg:mb-0"
-        >
-          {/* A subtle glow behind the logo to make it pop on dark background */}
-          <div className="absolute inset-0 bg-paper/5 blur-3xl rounded-full scale-150"></div>
-          <OptimizedImage
-            src="/logo1.webp" 
-            alt="Glam AURA Logo" 
-            priority={true}
-            width={800}
-            containerClassName="relative w-full max-w-sm md:max-w-md lg:max-w-lg"
-            className="w-full h-auto object-contain drop-shadow-2xl"
-          />
-        </motion.div>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="text-paper/40 cursor-pointer hover:text-paper transition-colors"
-          onClick={() => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })}
-        >
-          <ChevronDown size={28} />
-        </motion.div>
-      </motion.div>
     </section>
   );
 }

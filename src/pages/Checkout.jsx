@@ -101,19 +101,19 @@ export default function Checkout() {
       className="min-h-screen bg-transparent pt-24 pb-16"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="font-display text-3xl md:text-4xl text-paper mb-8">Checkout</h1>
+        <h1 className="font-display text-3xl md:text-4xl text-gray-900 mb-8">Checkout</h1>
 
         <div className="flex items-center gap-2 mb-10 font-body text-sm">
           {['Shipping', 'Payment', 'Review'].map((s, i) => (
             <div key={s} className="flex items-center gap-2">
               <span className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm ${
-                step > i + 1 ? 'bg-sage text-white' :
-                step === i + 1 ? 'bg-paper text-ink' : 'bg-paper/10 text-paper/40'
+                step > i + 1 ? 'bg-green-500 text-white' :
+                step === i + 1 ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'
               }`}>
                 {step > i + 1 ? '✓' : i + 1}
               </span>
-              <span className={step === i + 1 ? 'text-paper font-semibold' : 'text-paper/40'}>{s}</span>
-              {i < 2 && <span className="text-paper/10 mx-2">—</span>}
+              <span className={step === i + 1 ? 'text-gray-900 font-semibold' : 'text-gray-500'}>{s}</span>
+              {i < 2 && <span className="text-gray-100 mx-2">—</span>}
             </div>
           ))}
         </div>
@@ -125,7 +125,7 @@ export default function Checkout() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 onSubmit={handleShipping}
-                className="bg-transparent rounded-xl p-6 border border-paper/5 space-y-4"
+                className="bg-transparent rounded-xl p-6 border border-gray-100 space-y-4"
               >
                 <h2 className="font-display text-xl mb-4">Shipping Information</h2>
                 <div className="grid grid-cols-2 gap-4">
@@ -151,13 +151,13 @@ export default function Checkout() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 onSubmit={handlePayment}
-                className="bg-transparent rounded-xl p-6 border border-paper/5 space-y-4"
+                className="bg-transparent rounded-xl p-6 border border-gray-100 space-y-4"
               >
                 <div className="flex items-center gap-2 mb-4">
                   <CreditCard size={20} />
                   <h2 className="font-display text-xl">Payment</h2>
                 </div>
-                <p className="font-body text-sm text-paper/40 flex items-center gap-1 mb-4">
+                <p className="font-body text-sm text-gray-500 flex items-center gap-1 mb-4">
                   <Lock size={14} /> Test mode — use card number 4242 4242 4242 4242
                 </p>
                 <Input label="Cardholder Name" value={payment.name} onChange={e => setPayment(p => ({ ...p, name: e.target.value }))} error={errors.name} />
@@ -177,18 +177,18 @@ export default function Checkout() {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-transparent rounded-xl p-6 border border-paper/5 space-y-4"
+                className="bg-transparent rounded-xl p-6 border border-gray-100 space-y-4"
               >
                 <h2 className="font-display text-xl mb-4">Review Your Order</h2>
                 <div className="space-y-3">
                   <div>
-                    <p className="font-body text-xs text-paper/40 uppercase tracking-wider mb-1">Shipping To</p>
-                    <p className="font-body text-paper">{shipping.firstName} {shipping.lastName}</p>
-                    <p className="font-body text-sm text-paper/70">{shipping.address}, {shipping.city}, {shipping.state} {shipping.zip}</p>
-                    <p className="font-body text-sm text-paper/70">{shipping.email}</p>
+                    <p className="font-body text-xs text-gray-500 uppercase tracking-wider mb-1">Shipping To</p>
+                    <p className="font-body text-gray-900">{shipping.firstName} {shipping.lastName}</p>
+                    <p className="font-body text-sm text-gray-600">{shipping.address}, {shipping.city}, {shipping.state} {shipping.zip}</p>
+                    <p className="font-body text-sm text-gray-600">{shipping.email}</p>
                   </div>
-                  <div className="border-t border-paper/10 pt-3">
-                    <p className="font-body text-xs text-paper/40 uppercase tracking-wider mb-2">Items ({items.length})</p>
+                  <div className="border-t border-gray-100 pt-3">
+                    <p className="font-body text-xs text-gray-500 uppercase tracking-wider mb-2">Items ({items.length})</p>
                     {items.map(item => (
                       <div key={item.id} className="flex justify-between text-sm font-body">
                         <span>{item.name} × {item.quantity}</span>
@@ -214,7 +214,7 @@ export default function Checkout() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-transparent rounded-xl p-6 border border-paper/5 sticky top-28">
+            <div className="bg-transparent rounded-xl p-6 border border-gray-100 sticky top-28">
               <h3 className="font-display text-lg mb-4">Order Summary</h3>
               <div className="space-y-3 font-body text-sm">
                 {items.map(item => (
@@ -222,20 +222,20 @@ export default function Checkout() {
                     <OptimizedImage src={item.image} alt={item.name} width={120} containerClassName="w-12 h-14 rounded flex-shrink-0" className="w-full h-full object-cover" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate">{item.name}</p>
-                      <p className="text-xs text-paper/40">Qty: {item.quantity}</p>
+                      <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                       <p className="text-sm font-semibold">{formatCurrency(item.price * item.quantity)}</p>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="border-t border-paper/10 mt-4 pt-4 space-y-2 font-body text-sm">
-                <div className="flex justify-between text-paper/60"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
-                <div className="flex justify-between text-paper/60">
+              <div className="border-t border-gray-100 mt-4 pt-4 space-y-2 font-body text-sm">
+                <div className="flex justify-between text-gray-600"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
+                <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
                   <span>{shippingTotal === 0 ? 'Free' : formatCurrency(shippingTotal)}</span>
                 </div>
-                <div className="flex justify-between text-paper/60"><span>Tax</span><span>{formatCurrency(tax)}</span></div>
-                <div className="flex justify-between font-semibold text-paper border-t border-paper/10 pt-2">
+                <div className="flex justify-between text-gray-600"><span>Tax</span><span>{formatCurrency(tax)}</span></div>
+                <div className="flex justify-between font-semibold text-gray-900 border-t border-gray-100 pt-2">
                   <span>Total</span>
                   <span className="font-display text-xl">{formatCurrency(total)}</span>
                 </div>

@@ -2,11 +2,9 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-route
 import { AnimatePresence } from 'framer-motion';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext';
 import { ProductsProvider } from './context/ProductsContext';
-import AnimatedBackground from './components/layout/AnimatedBackground';
-import ThemeSwitcher from './components/layout/ThemeSwitcher';
 import Navbar from './components/layout/Navbar';
+import BottomNav from './components/layout/BottomNav';
 import Footer from './components/layout/Footer';
 import CartDrawer from './components/layout/CartDrawer';
 import Home from './pages/Home';
@@ -17,6 +15,8 @@ import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
+import Auth from './pages/Auth';
+import MyProfile from './pages/MyProfile';
 import NotFound from './pages/NotFound';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -28,10 +28,8 @@ function AppLayout() {
   const isAdmin = location.pathname.startsWith('/admin');
 
   return (
-    <>
+    <div className="pb-16 md:pb-0 min-h-screen bg-white text-gray-900 selection:bg-black selection:text-white">
       <ScrollToTop />
-      <AnimatedBackground />
-      {!isAdmin && <ThemeSwitcher />}
       {!isAdmin && <Navbar />}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
@@ -44,6 +42,8 @@ function AppLayout() {
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/profile" element={<MyProfile />} />
           <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
@@ -52,22 +52,21 @@ function AppLayout() {
       </AnimatePresence>
       {!isAdmin && <Footer />}
       {!isAdmin && <CartDrawer />}
-    </>
+      {!isAdmin && <BottomNav />}
+    </div>
   );
 }
 
 export default function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
-          <ProductsProvider>
-            <CartProvider>
-              <AppLayout />
-            </CartProvider>
-          </ProductsProvider>
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <ProductsProvider>
+          <CartProvider>
+            <AppLayout />
+          </CartProvider>
+        </ProductsProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

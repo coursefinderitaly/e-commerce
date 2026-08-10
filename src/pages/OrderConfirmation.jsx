@@ -20,19 +20,19 @@ export default function OrderConfirmation() {
           animate={{ scale: 1 }}
           transition={{ type: 'spring', damping: 15, stiffness: 200 }}
         >
-          <CheckCircle size={64} className="mx-auto text-sage mb-6" />
+          <CheckCircle size={64} className="mx-auto text-green-600 mb-6" />
         </motion.div>
-        <h1 className="font-display text-3xl md:text-4xl text-paper mb-3">Order Confirmed!</h1>
-        <p className="font-body text-paper/60 mb-2">
+        <h1 className="font-display text-3xl md:text-4xl text-gray-900 mb-3">Order Confirmed!</h1>
+        <p className="font-body text-gray-600 mb-2">
           Thank you for your order. You&apos;ll receive a confirmation email shortly.
         </p>
-        <div className="bg-transparent rounded-xl p-4 border border-paper/5 mb-8 inline-block">
-          <p className="font-body text-xs text-paper/40 uppercase tracking-wider mb-1">Order ID</p>
-          <p className="font-mono text-lg font-semibold text-paper">{orderId}</p>
+        <div className="bg-transparent rounded-xl p-4 border border-gray-100 mb-8 inline-block">
+          <p className="font-body text-xs text-gray-500 uppercase tracking-wider mb-1">Order ID</p>
+          <p className="font-mono text-lg font-semibold text-gray-900">{orderId}</p>
         </div>
         <div className="flex items-center justify-center gap-3 mb-8">
-          <Package size={20} className="text-paper/40" />
-          <p className="font-body text-sm text-paper/50">Estimated delivery: 5–8 business days</p>
+          <Package size={20} className="text-gray-500" />
+          <p className="font-body text-sm text-gray-500">Estimated delivery: 5–8 business days</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link to="/shop">

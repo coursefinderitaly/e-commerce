@@ -113,8 +113,8 @@ export default function AdminDashboard() {
         <div className="p-6 lg:p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="font-display text-2xl md:text-3xl text-paper capitalize">{activeTab}</h1>
-              <p className="font-body text-sm text-paper/50">Welcome back, {user?.email}</p>
+              <h1 className="font-display text-2xl md:text-3xl text-gray-900 capitalize">{activeTab}</h1>
+              <p className="font-body text-sm text-gray-500">Welcome back, {user?.email}</p>
             </div>
           </div>
 
@@ -139,9 +139,9 @@ export default function AdminDashboard() {
                   ))}
                 </div>
 
-                <div className="bg-transparent rounded-xl border border-paper/5 p-6">
+                <div className="bg-transparent rounded-xl border border-gray-100 p-6">
                   <h2 className="font-display text-lg mb-4">Recent Orders</h2>
-                  <div className="text-center py-12 font-body text-paper/30">
+                  <div className="text-center py-12 font-body text-gray-900">
                     <p>Orders will appear here once customers start purchasing.</p>
                   </div>
                 </div>
@@ -156,7 +156,7 @@ export default function AdminDashboard() {
                 exit={{ opacity: 0, y: -10 }}
               >
                 <div className="flex items-center justify-between mb-6">
-                  <p className="font-body text-sm text-paper/50">
+                  <p className="font-body text-sm text-gray-500">
                     {isLoading ? 'Loading products...' : `${products.length} products`}
                   </p>
                   <Button variant="primary" size="sm" onClick={handleAddNew}>
@@ -180,11 +180,11 @@ export default function AdminDashboard() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="bg-transparent rounded-xl border border-paper/5 p-6 text-center py-16"
+                className="bg-transparent rounded-xl border border-gray-100 p-6 text-center py-16"
               >
-                <ShoppingBag size={48} className="mx-auto text-paper/10 mb-4" />
-                <h3 className="font-display text-xl text-paper/40 mb-2">No Orders Yet</h3>
-                <p className="font-body text-sm text-paper/30">Orders will show up here once customers start purchasing.</p>
+                <ShoppingBag size={48} className="mx-auto text-gray-100 mb-4" />
+                <h3 className="font-display text-xl text-gray-500 mb-2">No Orders Yet</h3>
+                <p className="font-body text-sm text-gray-900">Orders will show up here once customers start purchasing.</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -204,7 +204,7 @@ export default function AdminDashboard() {
         onClose={() => setDeleteConfirm(null)}
         title="Delete Product"
       >
-        <p className="font-body text-paper/70 mb-6">
+        <p className="font-body text-gray-600 mb-6">
           Are you sure you want to delete <strong>{deleteConfirm?.name}</strong>? This action cannot be undone.
         </p>
         <div className="flex gap-3">

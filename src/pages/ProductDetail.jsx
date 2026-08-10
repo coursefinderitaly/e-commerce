@@ -24,8 +24,8 @@ export default function ProductDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-transparent pt-20">
         <div className="text-center">
-          <p className="font-display text-3xl text-paper/40 mb-4">Product not found</p>
-          <Link to="/shop" className="text-paper underline font-body">Back to shop</Link>
+          <p className="font-display text-3xl text-gray-500 mb-4">Product not found</p>
+          <Link to="/shop" className="text-gray-900 underline font-body">Back to shop</Link>
         </div>
       </div>
     );
@@ -51,7 +51,7 @@ export default function ProductDetail() {
       className="min-h-screen bg-transparent pt-24 pb-16"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link to="/shop" className="inline-flex items-center gap-1 text-sm font-body text-paper/50 hover:text-paper mb-8 transition-colors">
+        <Link to="/shop" className="inline-flex items-center gap-1 text-sm font-body text-gray-500 hover:text-gray-900 mb-8 transition-colors">
           <ChevronLeft size={16} /> Back to Shop
         </Link>
 
@@ -79,7 +79,7 @@ export default function ProductDetail() {
                     key={i}
                     onClick={() => setSelectedImage(i)}
                     className={`w-20 h-24 rounded-lg overflow-hidden border-2 transition-colors ${
-                      i === selectedImage ? 'border-paper/20' : 'border-transparent hover:border-paper/20'
+                      i === selectedImage ? 'border-gray-200' : 'border-transparent hover:border-gray-200'
                     }`}
                   >
                     <OptimizedImage src={img} alt="" width={160} containerClassName="w-full h-full" className="w-full h-full object-cover" />
@@ -100,35 +100,35 @@ export default function ProductDetail() {
                 <span className="text-sm font-body font-medium" style={{ color: cfg.fill }}>{product.category}</span>
               </div>
 
-              <h1 className="font-display text-3xl md:text-4xl text-paper mb-4">{product.name}</h1>
+              <h1 className="font-display text-3xl md:text-4xl text-gray-900 mb-4">{product.name}</h1>
 
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex items-center gap-1">
                   <Star size={16} className="text-amber-400 fill-amber-400" />
                   <span className="font-body font-semibold text-sm">{product.rating}</span>
                 </div>
-                <span className="text-paper/30">·</span>
-                <span className="font-body text-sm text-paper/50">{product.reviews} reviews</span>
+                <span className="text-gray-900">·</span>
+                <span className="font-body text-sm text-gray-500">{product.reviews} reviews</span>
               </div>
 
               <div className="flex items-center gap-3 mb-6">
-                <span className="font-display text-3xl text-paper">{formatCurrency(product.price)}</span>
+                <span className="font-display text-3xl text-gray-900">{formatCurrency(product.price)}</span>
                 {hasDiscount && (
                   <>
-                    <span className="font-body text-lg text-paper/40 line-through">{formatCurrency(product.originalPrice)}</span>
+                    <span className="font-body text-lg text-gray-500 line-through">{formatCurrency(product.originalPrice)}</span>
                     <Badge variant="sale">Save {Math.round((1 - product.price / product.originalPrice) * 100)}%</Badge>
                   </>
                 )}
               </div>
 
-              <p className="font-body text-paper/70 leading-relaxed mb-8">{product.description}</p>
+              <p className="font-body text-gray-600 leading-relaxed mb-8">{product.description}</p>
 
               <div className="mb-8">
-                <p className="font-body text-sm font-semibold text-paper mb-3">Quantity</p>
-                <div className="flex items-center border border-paper/20 rounded-lg w-fit">
-                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-3 hover:bg-paper/10"><Minus size={16} /></button>
+                <p className="font-body text-sm font-semibold text-gray-900 mb-3">Quantity</p>
+                <div className="flex items-center border border-gray-200 rounded-lg w-fit">
+                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-3 hover:bg-gray-100"><Minus size={16} /></button>
                   <span className="px-6 font-mono text-lg min-w-[3rem] text-center">{quantity}</span>
-                  <button onClick={() => setQuantity(q => q + 1)} className="p-3 hover:bg-paper/10"><Plus size={16} /></button>
+                  <button onClick={() => setQuantity(q => q + 1)} className="p-3 hover:bg-gray-100"><Plus size={16} /></button>
                 </div>
               </div>
 
@@ -136,7 +136,7 @@ export default function ProductDetail() {
                 <Button
                   variant="primary"
                   size="lg"
-                  className={`flex-1 ${added ? 'bg-sage hover:bg-sage' : ''}`}
+                  className={`flex-1 ${added ? 'bg-green-500 hover:bg-green-500' : ''}`}
                   onClick={handleAdd}
                 >
                   {added ? (
@@ -147,8 +147,8 @@ export default function ProductDetail() {
                 </Button>
               </div>
 
-              <div className="flex items-center gap-2 text-sm font-body text-paper/40">
-                <span className="w-2 h-2 rounded-full bg-sage" />
+              <div className="flex items-center gap-2 text-sm font-body text-gray-500">
+                <span className="w-2 h-2 rounded-full bg-green-500" />
                 {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
               </div>
             </div>
@@ -157,7 +157,7 @@ export default function ProductDetail() {
 
         {related.length > 0 && (
           <div>
-            <h2 className="font-display text-2xl md:text-3xl text-paper mb-6">Complete the Look</h2>
+            <h2 className="font-display text-2xl md:text-3xl text-gray-900 mb-6">Complete the Look</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {related.map(p => (
                 <ProductCard key={p.id} product={p} />

@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 
 const variants = {
-  primary: 'bg-paper text-ink hover:bg-paper/90',
-  secondary: 'bg-transparent border-2 border-paper/20 text-paper hover:bg-paper/10 hover:text-ink',
-  outline: 'bg-transparent border border-paper/30 text-paper hover:border-paper/20',
-  ghost: 'bg-transparent text-paper hover:bg-paper/10',
-  sage: 'bg-sage text-white hover:bg-sage/90',
+  primary: 'bg-gray-900 text-white hover:bg-gray-900',
+  secondary: 'bg-transparent border-2 border-gray-200 text-gray-900 hover:bg-gray-100 hover:text-white',
+  outline: 'bg-transparent border border-gray-200 text-gray-900 hover:border-gray-200',
+  ghost: 'bg-transparent text-gray-900 hover:bg-gray-100',
+  sage: 'bg-green-500 text-white hover:bg-green-500/90',
 };
 
 const sizes = {

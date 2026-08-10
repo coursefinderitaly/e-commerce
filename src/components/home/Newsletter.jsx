@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Check } from 'lucide-react';
-import { useScrollReveal } from '../../hooks/useScrollReveal';
+import { Send, Check, Sparkles, Gift } from 'lucide-react';
 import { validateEmail } from '../../utils/validators';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-  const { ref, isVisible } = useScrollReveal();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,55 +19,66 @@ export default function Newsletter() {
   };
 
   return (
-    <section ref={ref} className="py-24 bg-transparent relative overflow-hidden">
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-rust rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo rounded-full blur-3xl" />
-      </div>
+    <section className="py-12 md:py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-gray-900 via-stone-900 to-black text-white p-8 sm:p-12 md:p-16 text-center shadow-xl">
+          
+          <div className="relative z-10 max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full mb-4">
+              <Gift size={13} />
+              Exclusive Welcome Offer
+            </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="max-w-xl mx-auto text-center"
-        >
-          <p className="font-body text-bone/40 text-sm tracking-[0.2em] uppercase mb-3">Stay Connected</p>
-          <h2 className="font-display text-4xl md:text-5xl text-bone mb-4">Join the AURA</h2>
-          <p className="font-body text-bone/60 mb-8">
-            Be the first to know about new collections, exclusive drops, and only perks.
-          </p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-black text-white mb-3">
+              Get 15% Off Your First Order
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-300 mb-8 max-w-lg mx-auto">
+              Subscribe to the Glam VIP Club for early access to drops, secret weekend flash sales, and complimentary beauty routines.
+            </p>
 
-          {submitted ? (
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="flex items-center justify-center gap-2 text-sage font-body font-semibold"
-            >
-              <Check size={20} />
-              <span>You&apos;re in! Welcome to the AURA.</span>
-            </motion.div>
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <div className="flex-1">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => { setEmail(e.target.value); setError(''); }}
-                  placeholder="Your email address"
-                  className="w-full px-4 py-3 bg-paper/10 border border-bone/20 rounded-lg text-bone placeholder:text-bone/30 font-body text-sm focus:outline-none focus:border-bone/50 transition-colors"
-                />
-                {error && <p className="text-red-400 text-xs mt-1 text-left">{error}</p>}
-              </div>
-              <button
-                type="submit"
-                className="bg-transparent text-paper px-6 py-3 rounded-lg font-body font-semibold text-sm hover:bg-bone/90 transition-colors flex items-center justify-center gap-2"
+            {submitted ? (
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl max-w-md mx-auto"
               >
-                Subscribe <Send size={16} />
-              </button>
-            </form>
-          )}
-        </motion.div>
+                <div className="flex items-center justify-center gap-2 text-yellow-300 font-bold mb-2">
+                  <Check size={20} />
+                  <span>Welcome to Glam VIP!</span>
+                </div>
+                <p className="text-xs text-gray-200">
+                  Use coupon code <strong className="font-mono bg-yellow-400 text-black px-2 py-0.5 rounded ml-1 font-black">FIRST15</strong> at checkout for 15% off!
+                </p>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                <div className="flex-1 text-left">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError('');
+                    }}
+                    placeholder="Enter your email address..."
+                    className="w-full px-5 py-3.5 bg-white/10 border border-white/20 rounded-full text-white placeholder:text-gray-400 text-sm focus:outline-none focus:bg-white focus:text-gray-900 focus:placeholder:text-gray-400 transition-all"
+                  />
+                  {error && <p className="text-rose-400 text-xs mt-1.5 ml-3 font-semibold">{error}</p>}
+                </div>
+                <button
+                  type="submit"
+                  className="bg-yellow-400 text-black font-bold uppercase tracking-wider text-xs px-8 py-3.5 rounded-full hover:bg-white transition-all shadow-md flex items-center justify-center gap-2 flex-shrink-0"
+                >
+                  Join & Save <Send size={14} />
+                </button>
+              </form>
+            )}
+
+            <p className="text-[11px] text-gray-400 mt-4">
+              🔒 We respect your privacy. Unsubscribe at any time.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

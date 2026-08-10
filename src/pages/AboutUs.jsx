@@ -12,21 +12,21 @@ export default function AboutUs() {
           <p className="font-body text-berry text-sm tracking-[0.3em] uppercase mb-6">
             About Us
           </p>
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-paper mb-8 leading-tight">
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-gray-900 mb-8 leading-tight">
             Built on Trust. <br className="hidden md:block" /> Driven by Your Happiness.
           </h1>
           
-          <p className="font-body text-paper/70 text-lg md:text-xl leading-relaxed mb-6">
+          <p className="font-body text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
             At Glam AURA, we believe that true beauty begins with trust. As a premium e-commerce destination, our foundation is built on an unwavering commitment to authenticity, quality, and complete customer satisfaction.
           </p>
           
-          <p className="font-body text-paper/70 text-lg md:text-xl leading-relaxed mb-12">
+          <p className="font-body text-gray-600 text-lg md:text-xl leading-relaxed mb-12">
             Every product we curate is selected with one singular goal: to make you feel confident, radiant, and deeply happy with your purchase. We aren't just delivering premium cosmetics; we are delivering a promise of excellence that you can always believe in.
           </p>
           
-          <div className="inline-block p-8 rounded-2xl bg-paper/5 border border-paper/10 shadow-xl">
-            <h3 className="font-display text-2xl text-bone mb-3">Our Core Promise</h3>
-            <p className="font-body text-bone/60 text-lg">
+          <div className="inline-block p-8 rounded-2xl bg-gray-100 border border-gray-100 shadow-xl">
+            <h3 className="font-display text-2xl text-gray-900 mb-3">Our Core Promise</h3>
+            <p className="font-body text-gray-900/60 text-lg">
               100% Satisfaction &bull; Uncompromising Quality &bull; Genuine Care
             </p>
           </div>
