@@ -3,28 +3,42 @@ import { products as initialProducts } from '../data/products';
 
 const ProductsContext = createContext();
 const STORAGE_KEY = 'glamaura_products';
+const DELETED_KEY = 'glamaura_deleted_products';
 
-function mergeProducts(primaryList = [], fallbackList = []) {
+function mergeProducts(primaryList = [], fallbackList = [], deletedIds = []) {
   const map = new Map();
   // Load baseline initial products first
   (fallbackList || []).forEach(p => {
-    if (p && p.id) map.set(String(p.id), p);
+    if (p && p.id && !deletedIds.includes(String(p.id))) map.set(String(p.id), p);
   });
   // Overlay custom / primary products
   (primaryList || []).forEach(p => {
-    if (p && p.id) map.set(String(p.id), p);
+    if (p && p.id && !deletedIds.includes(String(p.id))) map.set(String(p.id), p);
   });
   return Array.from(map.values());
 }
 
 export function ProductsProvider({ children }) {
+  const [deletedIds, setDeletedIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem(DELETED_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
   const [products, setProducts] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return mergeProducts(parsed, initialProducts);
+          // Pass deletedIds initialized locally
+          const localDeleted = (() => {
+            try { return JSON.parse(localStorage.getItem(DELETED_KEY)) || []; } catch(e) { return []; }
+          })();
+          return mergeProducts(parsed, initialProducts, localDeleted);
         }
       }
     } catch (e) {
@@ -36,8 +50,8 @@ export function ProductsProvider({ children }) {
   const [loading, setLoading] = useState(false);
 
   // Helper to sync state and localStorage
-  const updateProductsState = (newList) => {
-    const merged = mergeProducts(newList, initialProducts);
+  const updateProductsState = (newList, currentDeletedIds = deletedIds) => {
+    const merged = mergeProducts(newList, initialProducts, currentDeletedIds);
     setProducts(merged);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
@@ -58,7 +72,7 @@ export function ProductsProvider({ children }) {
           if (Array.isArray(data) && data.length > 0) {
             // Merge API data with current local products to never lose un-synced products
             setProducts(currentProducts => {
-              const merged = mergeProducts(data, currentProducts);
+              const merged = mergeProducts(data, currentProducts, deletedIds);
               try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
               } catch (e) {}
@@ -75,7 +89,6 @@ export function ProductsProvider({ children }) {
   };
 
   const saveProduct = async (productData, isEdit = false) => {
-    // 1. Update local state & localStorage immediately so UI never loses products
     let updatedList;
     if (isEdit) {
       updatedList = products.map(p => String(p.id) === String(productData.id) ? { ...p, ...productData } : p);
@@ -84,7 +97,6 @@ export function ProductsProvider({ children }) {
     }
     updateProductsState(updatedList);
 
-    // 2. Attempt API sync if backend is active
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '';
       const url = isEdit ? `${baseUrl}/api/products/${productData.id}` : `${baseUrl}/api/products`;
@@ -103,11 +115,15 @@ export function ProductsProvider({ children }) {
   };
 
   const deleteProduct = async (productId) => {
-    // 1. Update local state & localStorage immediately
-    const updatedList = products.filter(p => String(p.id) !== String(productId));
-    updateProductsState(updatedList);
+    const newDeletedIds = [...deletedIds, String(productId)];
+    setDeletedIds(newDeletedIds);
+    try {
+      localStorage.setItem(DELETED_KEY, JSON.stringify(newDeletedIds));
+    } catch (e) {}
 
-    // 2. Attempt API delete if backend is active
+    const updatedList = products.filter(p => String(p.id) !== String(productId));
+    updateProductsState(updatedList, newDeletedIds);
+
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '';
       await fetch(`${baseUrl}/api/products/${productId}`, {
