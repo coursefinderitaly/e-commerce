@@ -5,56 +5,48 @@ const ProductsContext = createContext();
 const STORAGE_KEY = 'glamaura_products';
 const DELETED_KEY = 'glamaura_deleted_products';
 
-function mergeProducts(primaryList = [], fallbackList = [], deletedIds = []) {
-  const map = new Map();
-  // Load baseline initial products first
-  (fallbackList || []).forEach(p => {
-    if (p && p.id && !deletedIds.includes(String(p.id))) map.set(String(p.id), p);
-  });
-  // Overlay custom / primary products
-  (primaryList || []).forEach(p => {
-    if (p && p.id && !deletedIds.includes(String(p.id))) map.set(String(p.id), p);
-  });
-  return Array.from(map.values());
-}
+const getStoredDeletedIds = () => {
+  try {
+    const saved = localStorage.getItem(DELETED_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+const filterDeleted = (list, deletedIds) => {
+  const ids = deletedIds || getStoredDeletedIds();
+  return (list || []).filter(p => p && p.id && !ids.includes(String(p.id)));
+};
 
 export function ProductsProvider({ children }) {
-  const [deletedIds, setDeletedIds] = useState(() => {
-    try {
-      const saved = localStorage.getItem(DELETED_KEY);
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
-  });
+  const [deletedIds, setDeletedIds] = useState(getStoredDeletedIds);
 
   const [products, setProducts] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
+      const currentDeleted = getStoredDeletedIds();
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Pass deletedIds initialized locally
-          const localDeleted = (() => {
-            try { return JSON.parse(localStorage.getItem(DELETED_KEY)) || []; } catch(e) { return []; }
-          })();
-          return mergeProducts(parsed, initialProducts, localDeleted);
+          return filterDeleted(parsed, currentDeleted);
         }
       }
     } catch (e) {
       console.warn('Failed to parse products from localStorage:', e);
     }
-    return initialProducts;
+    return filterDeleted(initialProducts, getStoredDeletedIds());
   });
 
   const [loading, setLoading] = useState(false);
 
-  // Helper to sync state and localStorage
-  const updateProductsState = (newList, currentDeletedIds = deletedIds) => {
-    const merged = mergeProducts(newList, initialProducts, currentDeletedIds);
-    setProducts(merged);
+  // Update React state & localStorage
+  const updateProductsState = (newList) => {
+    const currentDeleted = getStoredDeletedIds();
+    const cleanList = filterDeleted(newList, currentDeleted);
+    setProducts(cleanList);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cleanList));
     } catch (e) {
       console.warn('Failed to save products to localStorage:', e);
     }
@@ -70,9 +62,15 @@ export function ProductsProvider({ children }) {
         if (contentType && contentType.includes('application/json')) {
           const data = await response.json();
           if (Array.isArray(data) && data.length > 0) {
-            // Merge API data with current local products to never lose un-synced products
+            const currentDeleted = getStoredDeletedIds();
+            const cleanData = filterDeleted(data, currentDeleted);
+
             setProducts(currentProducts => {
-              const merged = mergeProducts(data, currentProducts, deletedIds);
+              // Merge API data with local custom products, respecting deletions
+              const map = new Map();
+              cleanData.forEach(p => map.set(String(p.id), p));
+              filterDeleted(currentProducts, currentDeleted).forEach(p => map.set(String(p.id), p));
+              const merged = Array.from(map.values());
               try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
               } catch (e) {}
@@ -115,18 +113,21 @@ export function ProductsProvider({ children }) {
   };
 
   const deleteProduct = async (productId) => {
-    const newDeletedIds = [...deletedIds, String(productId)];
+    const stringId = String(productId);
+    const currentDeleted = getStoredDeletedIds();
+    const newDeletedIds = Array.from(new Set([...currentDeleted, stringId]));
+    
     setDeletedIds(newDeletedIds);
     try {
       localStorage.setItem(DELETED_KEY, JSON.stringify(newDeletedIds));
     } catch (e) {}
 
-    const updatedList = products.filter(p => String(p.id) !== String(productId));
-    updateProductsState(updatedList, newDeletedIds);
+    const updatedList = products.filter(p => String(p.id) !== stringId);
+    updateProductsState(updatedList);
 
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      await fetch(`${baseUrl}/api/products/${productId}`, {
+      await fetch(`${baseUrl}/api/products/${stringId}`, {
         method: 'DELETE',
         headers: {
           'x-admin-token': 'glamaura-secure-admin'
