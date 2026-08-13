@@ -17,6 +17,10 @@ app.use(express.json());
 // Connect to MongoDB
 connectDB();
 
+// Trust proxy is required when running behind a reverse proxy (like Hostinger's load balancer)
+// for express-rate-limit to correctly identify user IPs.
+app.set('trust proxy', 1);
+
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
