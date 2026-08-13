@@ -47,13 +47,31 @@ const adminAuth = (req, res, next) => {
   next();
 };
 
+// Utility to clean environment variables that might have accidental quotes or spaces
+const cleanEnvVar = (val) => {
+  if (!val) return val;
+  return val.trim().replace(/^["']|["']$/g, '');
+};
+
 // Initialize Redis
 const { createClient } = require('redis');
 let redisClient;
-if (process.env.REDIS_URL && process.env.REDIS_URL.trim() !== '') {
-  redisClient = createClient({ url: process.env.REDIS_URL.trim() });
-  redisClient.on('error', (err) => console.warn('Redis connection failed (Continuing without cache):', err.message));
-  redisClient.connect().then(() => console.log('Redis Cache Connected')).catch(() => {});
+const rawRedisUrl = process.env.REDIS_URL;
+
+if (rawRedisUrl && cleanEnvVar(rawRedisUrl) !== '') {
+  try {
+    const finalUrl = cleanEnvVar(rawRedisUrl);
+    // Basic validation to prevent node internal crash
+    if (!finalUrl.startsWith('redis://') && !finalUrl.startsWith('rediss://')) {
+      throw new Error('Redis URL must start with redis:// or rediss://');
+    }
+    redisClient = createClient({ url: finalUrl });
+    redisClient.on('error', (err) => console.warn('Redis connection failed (Continuing without cache):', err.message));
+    redisClient.connect().then(() => console.log('Redis Cache Connected')).catch(() => {});
+  } catch (err) {
+    console.warn('Redis failed to initialize (Continuing without cache):', err.message);
+    redisClient = null;
+  }
 }
 
 // Helper to clear cache
