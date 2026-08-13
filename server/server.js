@@ -50,8 +50,8 @@ const adminAuth = (req, res, next) => {
 // Initialize Redis
 const { createClient } = require('redis');
 let redisClient;
-if (process.env.REDIS_URL) {
-  redisClient = createClient({ url: process.env.REDIS_URL });
+if (process.env.REDIS_URL && process.env.REDIS_URL.trim() !== '') {
+  redisClient = createClient({ url: process.env.REDIS_URL.trim() });
   redisClient.on('error', (err) => console.warn('Redis connection failed (Continuing without cache):', err.message));
   redisClient.connect().then(() => console.log('Redis Cache Connected')).catch(() => {});
 }
