@@ -157,11 +157,11 @@ export default function MyProfile() {
                   <div className="max-w-md space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                      <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-black" defaultValue={user.name} />
+                      <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-black" defaultValue={user.name} maxLength="50" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                      <input type="email" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-black" defaultValue={user.email} readOnly />
+                      <input type="email" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-black" defaultValue={user.email} readOnly maxLength="100" />
                     </div>
                     <Button variant="primary" className="bg-black text-white hover:bg-gray-800 rounded-xl w-full py-3 mt-4">Save Changes</Button>
                   </div>

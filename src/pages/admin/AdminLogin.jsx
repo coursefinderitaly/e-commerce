@@ -58,6 +58,7 @@ export default function AdminLogin() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@examples.com"
+              maxLength="100"
             />
             <div className="relative">
               <Input
@@ -66,6 +67,7 @@ export default function AdminLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
+                maxLength="128"
               />
               <button
                 type="button"

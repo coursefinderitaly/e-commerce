@@ -155,16 +155,16 @@ export default function Checkout() {
               >
                 <h2 className="font-display text-xl mb-4">Shipping Information</h2>
                 <div className="grid grid-cols-2 gap-4">
-                  <Input label="First Name" value={shipping.firstName} onChange={updateShipping('firstName')} error={errors.firstName} />
-                  <Input label="Last Name" value={shipping.lastName} onChange={updateShipping('lastName')} error={errors.lastName} />
+                  <Input label="First Name" value={shipping.firstName} onChange={updateShipping('firstName')} error={errors.firstName} maxLength="50" />
+                  <Input label="Last Name" value={shipping.lastName} onChange={updateShipping('lastName')} error={errors.lastName} maxLength="50" />
                 </div>
-                <Input label="Email" type="email" value={shipping.email} onChange={updateShipping('email')} error={errors.email} />
-                <Input label="Phone" type="tel" value={shipping.phone} onChange={updateShipping('phone')} />
-                <Input label="Address" value={shipping.address} onChange={updateShipping('address')} error={errors.address} />
+                <Input label="Email" type="email" value={shipping.email} onChange={updateShipping('email')} error={errors.email} maxLength="100" />
+                <Input label="Phone" type="tel" value={shipping.phone} onChange={updateShipping('phone')} maxLength="15" />
+                <Input label="Address" value={shipping.address} onChange={updateShipping('address')} error={errors.address} maxLength="150" />
                 <div className="grid grid-cols-3 gap-4">
-                  <Input label="City" value={shipping.city} onChange={updateShipping('city')} error={errors.city} />
-                  <Input label="State" value={shipping.state} onChange={updateShipping('state')} error={errors.state} />
-                  <Input label="ZIP" value={shipping.zip} onChange={updateShipping('zip')} error={errors.zip} />
+                  <Input label="City" value={shipping.city} onChange={updateShipping('city')} error={errors.city} maxLength="50" />
+                  <Input label="State" value={shipping.state} onChange={updateShipping('state')} error={errors.state} maxLength="50" />
+                  <Input label="ZIP" value={shipping.zip} onChange={updateShipping('zip')} error={errors.zip} maxLength="10" />
                 </div>
                 <Button type="submit" variant="primary" size="lg" className="w-full mt-2">
                   Continue to Payment
@@ -186,11 +186,11 @@ export default function Checkout() {
                 <p className="font-body text-sm text-gray-500 flex items-center gap-1 mb-4">
                   <Lock size={14} /> Test mode — use card number 4242 4242 4242 4242
                 </p>
-                <Input label="Cardholder Name" value={payment.name} onChange={e => setPayment(p => ({ ...p, name: e.target.value }))} error={errors.name} />
-                <Input label="Card Number" value={payment.cardNumber} onChange={e => setPayment(p => ({ ...p, cardNumber: formatCard(e.target.value) }))} error={errors.cardNumber} placeholder="4242 4242 4242 4242" />
+                <Input label="Cardholder Name" value={payment.name} onChange={e => setPayment(p => ({ ...p, name: e.target.value }))} error={errors.name} maxLength="50" />
+                <Input label="Card Number" value={payment.cardNumber} onChange={e => setPayment(p => ({ ...p, cardNumber: formatCard(e.target.value) }))} error={errors.cardNumber} placeholder="4242 4242 4242 4242" maxLength="19" />
                 <div className="grid grid-cols-2 gap-4">
-                  <Input label="Expiry (MM/YY)" value={payment.expiry} onChange={e => setPayment(p => ({ ...p, expiry: formatExpiry(e.target.value) }))} error={errors.expiry} placeholder="MM/YY" />
-                  <Input label="CVV" value={payment.cvv} onChange={e => setPayment(p => ({ ...p, cvv: e.target.value.replace(/\D/g, '').slice(0, 4) }))} error={errors.cvv} placeholder="123" />
+                  <Input label="Expiry (MM/YY)" value={payment.expiry} onChange={e => setPayment(p => ({ ...p, expiry: formatExpiry(e.target.value) }))} error={errors.expiry} placeholder="MM/YY" maxLength="5" />
+                  <Input label="CVV" value={payment.cvv} onChange={e => setPayment(p => ({ ...p, cvv: e.target.value.replace(/\D/g, '').slice(0, 4) }))} error={errors.cvv} placeholder="123" maxLength="4" />
                 </div>
                 <div className="flex gap-3 mt-2">
                   <Button type="button" variant="outline" onClick={() => setStep(1)}>Back</Button>

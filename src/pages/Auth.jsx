@@ -196,6 +196,7 @@ export default function Auth() {
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Sarah Jenkins"
                       required
+                      maxLength="50"
                       className="w-full bg-milky-100 hover:bg-gray-100/50 focus:bg-milky-50 text-gray-900 text-sm pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
                     />
                     <User size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -217,6 +218,7 @@ export default function Auth() {
                     pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                     title="Please enter a valid email address format (e.g. name@gmail.com)"
                     required
+                    maxLength="100"
                     className="w-full bg-milky-100 hover:bg-gray-100/50 focus:bg-milky-50 text-gray-900 text-sm pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
                   />
                   <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -266,6 +268,7 @@ export default function Auth() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={isLogin ? 'Enter your password' : 'Create a strong password (min 6 chars)'}
                     required
+                    maxLength="128"
                     className="w-full bg-milky-100 hover:bg-gray-100/50 focus:bg-milky-50 text-gray-900 text-sm pl-10 pr-11 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
                   />
                   <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -305,6 +308,7 @@ export default function Auth() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Re-enter your password"
                       required
+                      maxLength="128"
                       className={`w-full bg-milky-100 hover:bg-gray-100/50 focus:bg-milky-50 text-gray-900 text-sm pl-10 pr-11 py-3 rounded-xl border focus:outline-none focus:ring-1 transition-all ${
                         confirmPassword && password !== confirmPassword
                           ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-500'
