@@ -54,14 +54,47 @@ const cleanEnvVar = (val) => {
 };
 
 // Initialize Redis
-const { createClient } = require('redis');
-let redisClient;
+let redisClient = null;
+
+const restUrl = process.env.UPSTASH_REDIS_REST_URL;
+const restToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 const rawRedisUrl = process.env.REDIS_URL;
 
-if (rawRedisUrl && cleanEnvVar(rawRedisUrl) !== '') {
+if (restUrl && restToken && cleanEnvVar(restUrl) !== '') {
+  // Use Upstash REST API (Bypasses Hostinger Port 6379 Blocking)
+  const url = cleanEnvVar(restUrl);
+  const token = cleanEnvVar(restToken);
+  
+  redisClient = {
+    isReady: true,
+    async get(key) {
+      try {
+        const res = await fetch(`${url}/get/${key}`, { headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+        return data.result;
+      } catch (e) { return null; }
+    },
+    async setEx(key, seconds, value) {
+      try {
+        await fetch(`${url}/setex/${key}/${seconds}`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'text/plain' },
+          body: value
+        });
+      } catch (e) {}
+    },
+    async del(key) {
+      try {
+        await fetch(`${url}/del/${key}`, { headers: { Authorization: `Bearer ${token}` } });
+      } catch (e) {}
+    }
+  };
+  console.log('Redis Cache Connected via Upstash REST API');
+} else if (rawRedisUrl && cleanEnvVar(rawRedisUrl) !== '') {
+  // Use Standard TCP Client
+  const { createClient } = require('redis');
   try {
     const finalUrl = cleanEnvVar(rawRedisUrl);
-    // Basic validation to prevent node internal crash
     if (!finalUrl.startsWith('redis://') && !finalUrl.startsWith('rediss://')) {
       throw new Error('Redis URL must start with redis:// or rediss://');
     }
