@@ -98,23 +98,30 @@ export default function ProductForm({ product, onSubmit, onClose }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     const validImages = form.images.filter(Boolean);
-    onSubmit({
-      id: product?.id || Date.now().toString(),
-      name: form.name,
-      description: form.description,
-      price: parseFloat(form.price) || 0,
-      originalPrice: form.originalPrice ? (parseFloat(form.originalPrice) || undefined) : undefined,
-      category: form.category || 'Skin',
-      stock: parseInt(form.stock, 10) || 0,
-      images: validImages.length > 0 ? validImages : ['https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80'],
-      rating: product?.rating || 4.5,
-      reviews: product?.reviews || 0,
-      featured: product?.featured || false,
-      tags: product?.tags || [],
-    });
+    try {
+      await onSubmit({
+        id: product?.id || Date.now().toString(),
+        name: form.name,
+        description: form.description,
+        price: parseFloat(form.price) || 0,
+        originalPrice: form.originalPrice ? (parseFloat(form.originalPrice) || undefined) : undefined,
+        category: form.category || 'Skin',
+        stock: parseInt(form.stock, 10) || 0,
+        images: validImages.length > 0 ? validImages : ['https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80'],
+        rating: product?.rating || 4.5,
+        reviews: product?.reviews || 0,
+        featured: product?.featured || false,
+        tags: product?.tags || [],
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -206,9 +213,9 @@ export default function ProductForm({ product, onSubmit, onClose }) {
           </div>
 
           <div className="flex gap-3 pt-4 border-t border-gray-100">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit" variant="primary" className="flex-1">
-              {product ? 'Update Product' : 'Add Product'}
+            <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>Cancel</Button>
+            <Button type="submit" variant="primary" className="flex-1" disabled={isSubmitting}>
+              {isSubmitting ? 'Saving...' : (product ? 'Update Product' : 'Add Product')}
             </Button>
           </div>
         </form>
