@@ -43,11 +43,44 @@ const adminAuth = (req, res, next) => {
   next();
 };
 
-// GET all products
+// Initialize Redis
+const { createClient } = require('redis');
+let redisClient;
+if (process.env.REDIS_URL) {
+  redisClient = createClient({ url: process.env.REDIS_URL });
+  redisClient.on('error', (err) => console.warn('Redis connection failed (Continuing without cache):', err.message));
+  redisClient.connect().then(() => console.log('Redis Cache Connected')).catch(() => {});
+}
+
+// Helper to clear cache
+const clearCache = async () => {
+  if (redisClient && redisClient.isReady) {
+    try {
+      await redisClient.del('all_products');
+    } catch (err) {
+      console.warn('Failed to clear cache', err);
+    }
+  }
+};
+
+// GET all products (Cached)
 app.get('/api/products', async (req, res) => {
   try {
+    if (redisClient && redisClient.isReady) {
+      const cached = await redisClient.get('all_products');
+      if (cached) {
+        return res.json(JSON.parse(cached));
+      }
+    }
+
     const products = await Product.find({});
-    res.json(products.map(formatProduct));
+    const formatted = products.map(formatProduct);
+
+    if (redisClient && redisClient.isReady) {
+      await redisClient.setEx('all_products', 3600, JSON.stringify(formatted)); // Cache for 1 hour
+    }
+
+    res.json(formatted);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -77,6 +110,7 @@ app.post('/api/products', adminAuth, async (req, res) => {
       images: images || [], rating: rating || 4.5, reviews: reviews || 0, featured: featured ? true : false, tags: tags || []
     });
     
+    await clearCache();
     res.status(201).json({ message: 'Product created successfully', id });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -95,6 +129,7 @@ app.put('/api/products/:id', adminAuth, async (req, res) => {
     );
     
     if (updated) {
+      await clearCache();
       res.json({ message: 'Product updated successfully' });
     } else {
       res.status(404).json({ error: 'Product not found' });
@@ -109,6 +144,7 @@ app.delete('/api/products/:id', adminAuth, async (req, res) => {
   try {
     const deleted = await Product.findOneAndDelete({ id: req.params.id });
     if (deleted) {
+      await clearCache();
       res.json({ message: 'Product deleted successfully' });
     } else {
       res.status(404).json({ error: 'Product not found' });
