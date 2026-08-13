@@ -28,11 +28,11 @@ export default function MyProfile() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 bg-gray-50">
+    <div className="min-h-screen pt-24 pb-12 bg-milky-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Mobile Profile Header */}
-        <div className="md:hidden flex items-center gap-4 mb-6 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+        <div className="md:hidden flex items-center gap-4 mb-6 bg-milky-50 p-4 rounded-2xl shadow-sm border border-gray-100">
           <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center text-xl font-bold uppercase">
             {user.name?.[0] || 'U'}
           </div>
@@ -46,7 +46,7 @@ export default function MyProfile() {
           
           {/* Sidebar */}
           <div className="w-full md:w-64 flex-shrink-0">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 overflow-hidden">
+            <div className="bg-milky-50 rounded-2xl shadow-sm border border-gray-100 p-2 overflow-hidden">
               <div className="hidden md:flex items-center gap-3 p-4 mb-2 border-b border-gray-100">
                 <div className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center text-lg font-bold uppercase">
                   {user.name?.[0] || 'U'}
@@ -63,8 +63,8 @@ export default function MyProfile() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl md:rounded-none md:first:rounded-t-none md:last:rounded-b-none transition-colors whitespace-nowrap md:whitespace-normal font-medium ${
                       activeTab === tab.id
-                        ? 'bg-black text-white md:bg-gray-50 md:text-black md:border-r-4 md:border-black'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-black'
+                        ? 'bg-black text-white md:bg-milky-100 md:text-black md:border-r-4 md:border-black'
+                        : 'text-gray-600 hover:bg-milky-100 hover:text-black'
                     }`}
                   >
                     <tab.icon size={18} />
@@ -89,13 +89,13 @@ export default function MyProfile() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 min-h-[500px]"
+              className="bg-milky-50 rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 min-h-[500px]"
             >
               {activeTab === 'orders' && (
                 <div>
                   <h2 className="text-2xl font-display font-bold text-gray-900 mb-6">My Orders</h2>
                   <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                    <div className="w-20 h-20 bg-milky-100 rounded-full flex items-center justify-center mb-4">
                       <Package size={32} className="text-gray-400" />
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2">No orders yet</h3>

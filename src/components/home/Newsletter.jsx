@@ -19,7 +19,7 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section className="py-12 md:py-16 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-gray-900 via-stone-900 to-black text-white p-8 sm:p-12 md:p-16 text-center shadow-xl">
           
@@ -40,7 +40,7 @@ export default function Newsletter() {
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl max-w-md mx-auto"
+                className="bg-transparent/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl max-w-md mx-auto"
               >
                 <div className="flex items-center justify-center gap-2 text-yellow-300 font-bold mb-2">
                   <Check size={20} />
@@ -61,13 +61,13 @@ export default function Newsletter() {
                       setError('');
                     }}
                     placeholder="Enter your email address..."
-                    className="w-full px-5 py-3.5 bg-white/10 border border-white/20 rounded-full text-white placeholder:text-gray-400 text-sm focus:outline-none focus:bg-white focus:text-gray-900 focus:placeholder:text-gray-400 transition-all"
+                    className="w-full px-5 py-3.5 bg-transparent/10 border border-white/20 rounded-full text-white placeholder:text-gray-400 text-sm focus:outline-none focus:bg-transparent focus:text-gray-900 focus:placeholder:text-gray-400 transition-all"
                   />
                   {error && <p className="text-rose-400 text-xs mt-1.5 ml-3 font-semibold">{error}</p>}
                 </div>
                 <button
                   type="submit"
-                  className="bg-yellow-400 text-black font-bold uppercase tracking-wider text-xs px-8 py-3.5 rounded-full hover:bg-white transition-all shadow-md flex items-center justify-center gap-2 flex-shrink-0"
+                  className="bg-yellow-400 text-black font-bold uppercase tracking-wider text-xs px-8 py-3.5 rounded-full hover:bg-transparent transition-all shadow-md flex items-center justify-center gap-2 flex-shrink-0"
                 >
                   Join & Save <Send size={14} />
                 </button>

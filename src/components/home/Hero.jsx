@@ -50,7 +50,7 @@ export default function Hero() {
   const prevSlide = () => setCurrent((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1));
 
   return (
-    <section className="bg-white py-4 md:py-6">
+    <section className="bg-transparent py-4 md:py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Banner Slider */}
@@ -116,13 +116,13 @@ export default function Hero() {
                   >
                     <Link
                       to={heroSlides[current].link}
-                      className="inline-flex items-center gap-2 bg-white text-black font-bold uppercase tracking-wider text-xs sm:text-sm px-6 sm:px-8 py-3.5 rounded-full hover:bg-yellow-400 hover:text-black transition-all transform hover:scale-105 shadow-lg"
+                      className="inline-flex items-center gap-2 bg-transparent text-black font-bold uppercase tracking-wider text-xs sm:text-sm px-6 sm:px-8 py-3.5 rounded-full hover:bg-yellow-400 hover:text-black transition-all transform hover:scale-105 shadow-lg"
                     >
                       <span>{heroSlides[current].buttonText}</span>
                       <ArrowRight size={16} />
                     </Link>
 
-                    <div className="bg-white/15 backdrop-blur-md border border-white/30 text-white font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-full">
+                    <div className="bg-transparent/15 backdrop-blur-md border border-white/30 text-white font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-full">
                       {heroSlides[current].discount}
                     </div>
                   </motion.div>
@@ -136,14 +136,14 @@ export default function Hero() {
           <button
             onClick={prevSlide}
             aria-label="Previous Slide"
-            className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/30 hover:bg-white text-black backdrop-blur-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 z-20 shadow-md"
+            className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-transparent/30 hover:bg-transparent text-black backdrop-blur-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 z-20 shadow-md"
           >
             <ChevronLeft size={22} strokeWidth={2.5} />
           </button>
           <button
             onClick={nextSlide}
             aria-label="Next Slide"
-            className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/30 hover:bg-white text-black backdrop-blur-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 z-20 shadow-md"
+            className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-transparent/30 hover:bg-transparent text-black backdrop-blur-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 z-20 shadow-md"
           >
             <ChevronRight size={22} strokeWidth={2.5} />
           </button>
@@ -158,7 +158,7 @@ export default function Hero() {
                 className={`transition-all duration-300 rounded-full ${
                   current === idx
                     ? 'w-8 h-2 bg-yellow-400'
-                    : 'w-2 h-2 bg-white/50 hover:bg-white'
+                    : 'w-2 h-2 bg-transparent/50 hover:bg-transparent'
                 }`}
               />
             ))}

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Heart, Instagram, Twitter, Youtube, Facebook, Mail, Phone, ShieldCheck } from 'lucide-react';
+import BrandLogo from '../common/BrandLogo';
 
 export default function Footer() {
   return (
@@ -11,30 +12,7 @@ export default function Footer() {
           
           {/* Col 1: Brand & Contact */}
           <div>
-            <Link to="/" className="flex items-center gap-2.5 mb-4 group">
-              <div className="p-1 rounded-xl bg-gray-900 border border-gray-800 shadow-[0_4px_16px_rgba(0,0,0,0.4)] flex items-center justify-center group-hover:border-amber-500/30 transition-colors">
-                <img
-                  src="/logo1.png"
-                  alt="My Glam Aura Logo"
-                  className="h-10 sm:h-12 w-auto object-contain filter brightness-110 saturate-125"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div className="flex flex-col text-left">
-                <div className="flex items-baseline">
-                  <span className="font-sans font-extrabold text-base sm:text-lg tracking-tight text-white uppercase">
-                    GLAM
-                  </span>
-                  <span className="font-display italic font-semibold text-base sm:text-lg tracking-normal text-amber-500 ml-0.5">
-                    Aura
-                  </span>
-                </div>
-                <span className="text-[7.5px] uppercase tracking-[0.25em] font-black text-amber-500/80 mt-0.5">
-                  Clean Cosmetics
-                </span>
-              </div>
-            </Link>
+            <BrandLogo variant="footer" size="md" className="mb-4" />
             <p className="text-xs text-gray-400 leading-relaxed mb-4">
               Glam Aura is your premier destination for clinical-grade clean skincare, revitalizing hair therapies, and luxury cosmetics.
             </p>

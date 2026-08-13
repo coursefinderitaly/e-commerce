@@ -16,6 +16,8 @@ import {
   Sparkles,
 } from 'lucide-react';
 
+import BrandLogo from '../components/common/BrandLogo';
+
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
 
@@ -107,34 +109,20 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center bg-gray-50/50 py-6 sm:py-12 pb-24 md:pb-12 px-4">
-      <div className="max-w-md w-full">
+    <div className="relative min-h-[85vh] flex items-center justify-center bg-gradient-to-b from-amber-50/40 via-rose-50/20 to-milky-100/80 py-8 sm:py-14 pb-24 md:pb-14 px-4 overflow-hidden">
+      {/* Background Paint Brush Ambient Light Blobs */}
+      <div className="absolute top-1/4 -left-20 w-80 h-80 bg-amber-200/30 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 -right-20 w-80 h-80 bg-rose-200/30 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-100/40 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="relative z-10 max-w-md w-full">
         
         {/* Brand Header */}
         <div className="text-center mb-6">
-          <Link to="/" className="inline-flex items-center justify-center gap-2.5 mb-2 group">
-            <div className="p-1.5 px-2 bg-gradient-to-br from-slate-900 via-gray-950 to-black rounded-xl border border-gray-800 shadow-md flex items-center justify-center group-hover:border-amber-500/40 transition-all">
-              <img
-                src="/logo1.png"
-                alt="Glam AURA"
-                className="h-8 sm:h-9 w-auto object-contain filter brightness-105 contrast-110 drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
-              />
-            </div>
-            <div className="flex flex-col text-left">
-              <div className="flex items-baseline">
-                <span className="font-sans font-extrabold text-xl tracking-tight text-slate-900 uppercase">
-                  GLAM
-                </span>
-                <span className="font-display italic font-semibold text-xl tracking-normal text-amber-600 ml-0.5">
-                  Aura
-                </span>
-              </div>
-              <span className="text-[7px] uppercase tracking-[0.22em] font-black text-amber-700">
-                Clean Cosmetics
-              </span>
-            </div>
-          </Link>
-          <p className="text-xs text-gray-500 font-medium">
+          <div className="flex justify-center mb-3">
+            <BrandLogo variant="auth" size="lg" linkTo="/" />
+          </div>
+          <p className="text-xs text-amber-900/70 font-semibold tracking-wide mt-1">
             {isLogin
               ? 'Access your saved addresses, orders, and wishlist'
               : 'Join the Glam Aura Beauty Club & get 15% off'}
@@ -145,7 +133,7 @@ export default function Auth() {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden"
+          className="bg-milky-50/95 backdrop-blur-md rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.08)] border border-amber-100/60 overflow-hidden"
         >
           {/* Tabs: Log In / Sign Up */}
           <div className="flex bg-gray-100/70 p-1.5 m-4 sm:m-6 rounded-2xl border border-gray-200/50">
@@ -157,7 +145,7 @@ export default function Auth() {
               }}
               className={`flex-1 py-2.5 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-xl transition-all ${
                 isLogin
-                  ? 'bg-white text-black shadow-sm'
+                  ? 'bg-milky-50 text-black shadow-sm'
                   : 'text-gray-500 hover:text-black'
               }`}
             >
@@ -171,7 +159,7 @@ export default function Auth() {
               }}
               className={`flex-1 py-2.5 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-xl transition-all ${
                 !isLogin
-                  ? 'bg-white text-black shadow-sm'
+                  ? 'bg-milky-50 text-black shadow-sm'
                   : 'text-gray-500 hover:text-black'
               }`}
             >
@@ -208,7 +196,7 @@ export default function Auth() {
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Sarah Jenkins"
                       required
-                      className="w-full bg-gray-50 hover:bg-gray-100/50 focus:bg-white text-gray-900 text-sm pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
+                      className="w-full bg-milky-100 hover:bg-gray-100/50 focus:bg-milky-50 text-gray-900 text-sm pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
                     />
                     <User size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                   </div>
@@ -229,7 +217,7 @@ export default function Auth() {
                     pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                     title="Please enter a valid email address format (e.g. name@gmail.com)"
                     required
-                    className="w-full bg-gray-50 hover:bg-gray-100/50 focus:bg-white text-gray-900 text-sm pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
+                    className="w-full bg-milky-100 hover:bg-gray-100/50 focus:bg-milky-50 text-gray-900 text-sm pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
                   />
                   <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 </div>
@@ -248,7 +236,7 @@ export default function Auth() {
                       onChange={(e) => setPhone(e.target.value.replace(/[^0-9+]/g, ''))}
                       placeholder="+15550000000"
                       maxLength="15"
-                      className="w-full bg-gray-50 hover:bg-gray-100/50 focus:bg-white text-gray-900 text-sm pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
+                      className="w-full bg-milky-100 hover:bg-gray-100/50 focus:bg-milky-50 text-gray-900 text-sm pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
                     />
                     <Phone size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                   </div>
@@ -278,7 +266,7 @@ export default function Auth() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={isLogin ? 'Enter your password' : 'Create a strong password (min 6 chars)'}
                     required
-                    className="w-full bg-gray-50 hover:bg-gray-100/50 focus:bg-white text-gray-900 text-sm pl-10 pr-11 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
+                    className="w-full bg-milky-100 hover:bg-gray-100/50 focus:bg-milky-50 text-gray-900 text-sm pl-10 pr-11 py-3 rounded-xl border border-gray-200 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition-all"
                   />
                   <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                   <button
@@ -317,7 +305,7 @@ export default function Auth() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Re-enter your password"
                       required
-                      className={`w-full bg-gray-50 hover:bg-gray-100/50 focus:bg-white text-gray-900 text-sm pl-10 pr-11 py-3 rounded-xl border focus:outline-none focus:ring-1 transition-all ${
+                      className={`w-full bg-milky-100 hover:bg-gray-100/50 focus:bg-milky-50 text-gray-900 text-sm pl-10 pr-11 py-3 rounded-xl border focus:outline-none focus:ring-1 transition-all ${
                         confirmPassword && password !== confirmPassword
                           ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-500'
                           : 'border-gray-200 focus:border-black focus:ring-black'

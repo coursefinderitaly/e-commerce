@@ -5,12 +5,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    background-color: white;
+    background-color: #FDFBF7;
   }
   body {
     font-family: 'Manrope', sans-serif;
     color: #111827; /* gray-900 */
-    background-color: white;
+    background-color: #FDFBF7;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

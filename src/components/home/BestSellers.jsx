@@ -16,7 +16,7 @@ export default function BestSellers() {
     : products.filter((p) => p.category.toLowerCase() === activeTab.toLowerCase());
 
   return (
-    <section className="py-8 md:py-12 bg-white">
+    <section className="py-8 md:py-12 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header & Tabs */}
@@ -54,20 +54,27 @@ export default function BestSellers() {
           layout
           className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
         >
-          <AnimatePresence>
-            {filteredProducts.slice(0, 8).map((product) => (
-              <motion.div
-                key={product.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          {filteredProducts.length === 0 ? (
+            <div className="col-span-full py-12 text-center text-gray-500 bg-milky-100/80 rounded-2xl border border-dashed border-gray-200">
+              <p className="text-sm font-bold text-gray-700">No products available yet</p>
+              <p className="text-xs text-gray-400 mt-1">Products added from the Admin Panel will appear here live.</p>
+            </div>
+          ) : (
+            <AnimatePresence>
+              {filteredProducts.slice(0, 8).map((product) => (
+                <motion.div
+                  key={product.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          )}
         </motion.div>
 
         {/* Bottom CTA */}

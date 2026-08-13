@@ -28,7 +28,7 @@ function AppLayout() {
   const isAdmin = location.pathname.startsWith('/admin');
 
   return (
-    <div className="pb-16 md:pb-0 min-h-screen bg-white text-gray-900 selection:bg-black selection:text-white">
+    <div className="pb-16 md:pb-0 min-h-screen bg-transparent text-gray-900 selection:bg-black selection:text-white">
       <ScrollToTop />
       {!isAdmin && <Navbar />}
       <AnimatePresence mode="wait">

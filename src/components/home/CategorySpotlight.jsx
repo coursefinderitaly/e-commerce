@@ -38,7 +38,7 @@ const categorySpotlights = [
 
 export default function CategorySpotlight() {
   return (
-    <section className="py-8 md:py-12 bg-gray-50">
+    <section className="py-8 md:py-12 bg-milky-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Title */}
@@ -81,7 +81,7 @@ export default function CategorySpotlight() {
 
               {/* Content */}
               <div className="absolute inset-0 p-6 flex flex-col justify-between text-white">
-                <span className="self-start text-[11px] font-bold uppercase tracking-widest bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20">
+                <span className="self-start text-[11px] font-bold uppercase tracking-widest bg-transparent/20 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20">
                   {cat.items}
                 </span>
 

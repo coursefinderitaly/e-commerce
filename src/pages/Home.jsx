@@ -15,7 +15,7 @@ export default function Home() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-white min-h-screen"
+      className="bg-transparent min-h-screen"
     >
       {/* 1. Category Row (Flipkart / Meesho Stories style) */}
       <CategoryShowcase />

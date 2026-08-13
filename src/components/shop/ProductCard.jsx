@@ -37,10 +37,10 @@ export default function ProductCard({ product }) {
 
   return (
     <Link to={`/product/${product.id}`} className="group block h-full">
-      <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full relative">
+      <div className="bg-milky-50 rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full relative">
         
         {/* Product Image Box */}
-        <div className="relative overflow-hidden aspect-square bg-gray-50 flex-shrink-0">
+        <div className="relative overflow-hidden aspect-square bg-milky-100 flex-shrink-0">
           <OptimizedImage
             src={product.images?.[0] || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80'}
             alt={product.name}
@@ -68,7 +68,7 @@ export default function ProductCard({ product }) {
           <button
             onClick={handleWishlist}
             aria-label="Wishlist"
-            className="absolute top-2.5 right-2.5 p-2 rounded-full bg-white/90 hover:bg-white text-gray-700 hover:text-rose-600 shadow-sm transition-all z-10"
+            className="absolute top-2.5 right-2.5 p-2 rounded-full bg-milky-50/90 hover:bg-milky-50 text-gray-700 hover:text-rose-600 shadow-sm transition-all z-10"
           >
             <Heart
               size={16}

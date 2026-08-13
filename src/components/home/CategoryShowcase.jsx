@@ -42,7 +42,7 @@ const categoryItems = [
 
 export default function CategoryShowcase() {
   return (
-    <section className="bg-white py-4 md:py-6 border-b border-gray-100">
+    <section className="bg-transparent py-4 md:py-6 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4 sm:gap-8 overflow-x-auto no-scrollbar py-2">
           {categoryItems.map((cat) => (

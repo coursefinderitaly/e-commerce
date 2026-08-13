@@ -1,4 +1,5 @@
 import { LayoutDashboard, Package, LogOut, ShoppingBag } from 'lucide-react';
+import BrandLogo from '../common/BrandLogo';
 
 const links = [
   { name: 'Dashboard', icon: LayoutDashboard, tab: 'dashboard' },
@@ -10,12 +11,8 @@ export default function Sidebar({ activeTab, onTabChange, onLogout }) {
   return (
     <aside className="w-64 bg-transparent h-screen sticky top-0 flex flex-col border-r border-bone/10">
       <div className="p-6 border-b border-bone/10">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 px-3 bg-gradient-to-br from-slate-900 via-gray-950 to-black rounded-xl border border-gray-800 shadow-sm flex items-center justify-center">
-            <img src="/logo1.png" alt="Glam AURA" className="h-10 w-auto object-contain filter brightness-105 contrast-110" decoding="async" />
-          </div>
-        </div>
-        <p className="font-mono text-xs text-gray-900/30 mt-1">Admin Panel</p>
+        <BrandLogo variant="sidebar" size="sm" showTagline={false} />
+        <p className="font-mono text-xs text-amber-700 font-bold uppercase tracking-wider mt-2">Admin Panel</p>
       </div>
 
       <nav className="flex-1 p-4 space-y-1">

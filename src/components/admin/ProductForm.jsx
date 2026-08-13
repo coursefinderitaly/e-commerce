@@ -127,7 +127,7 @@ export default function ProductForm({ product, onSubmit, onClose }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="bg-white/90 backdrop-blur-2xl border border-gray-100 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-milky-50/90 backdrop-blur-2xl border border-gray-100 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
@@ -164,7 +164,7 @@ export default function ProductForm({ product, onSubmit, onClose }) {
                 onChange={updateField('category')}
                 className="w-full px-4 py-2.5 bg-transparent border border-gray-200 rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-paper/20 focus:border-gray-200"
               >
-                {categories.map(c => <option key={c} value={c} className="bg-white text-gray-900">{c}</option>)}
+                {categories.map(c => <option key={c} value={c} className="bg-milky-50 text-gray-900">{c}</option>)}
               </select>
             </div>
             <Input label="Stock Quantity" type="number" min="0" value={form.stock} onChange={updateField('stock')} required />

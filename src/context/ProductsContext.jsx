@@ -61,21 +61,13 @@ export function ProductsProvider({ children }) {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           const data = await response.json();
-          if (Array.isArray(data) && data.length > 0) {
+          if (Array.isArray(data)) {
             const currentDeleted = getStoredDeletedIds();
             const cleanData = filterDeleted(data, currentDeleted);
-
-            setProducts(currentProducts => {
-              // Merge API data with local custom products, respecting deletions
-              const map = new Map();
-              cleanData.forEach(p => map.set(String(p.id), p));
-              filterDeleted(currentProducts, currentDeleted).forEach(p => map.set(String(p.id), p));
-              const merged = Array.from(map.values());
-              try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-              } catch (e) {}
-              return merged;
-            });
+            setProducts(cleanData);
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(cleanData));
+            } catch (e) {}
           }
         }
       }

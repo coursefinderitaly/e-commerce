@@ -21,6 +21,8 @@ export default function Trending() {
     }
   };
 
+  if (trending.length === 0) return null;
+
   return (
     <section ref={ref} className="py-12 md:py-20 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

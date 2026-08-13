@@ -31,7 +31,6 @@ const db = new sqlite3.Database(dbPath, (err) => {
       tags TEXT
     )`, (err) => {
       if (err) console.error('Error creating products table', err.message);
-      else seedDatabase();
     });
 
     // Create secure orders table

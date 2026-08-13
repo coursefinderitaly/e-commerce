@@ -40,8 +40,10 @@ export default function FlashDeals() {
 
   const dealProducts = products.filter((p) => p.originalPrice && p.originalPrice > p.price);
 
+  if (dealProducts.length === 0) return null;
+
   return (
-    <section className="py-8 md:py-12 bg-white">
+    <section className="py-8 md:py-12 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -63,7 +65,7 @@ export default function FlashDeals() {
               </div>
 
               {/* Ticking Timer */}
-              <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-rose-200 text-xs font-bold text-gray-800 shadow-sm">
+              <div className="flex items-center gap-1.5 bg-transparent px-3 py-1.5 rounded-xl border border-rose-200 text-xs font-bold text-gray-800 shadow-sm">
                 <Clock size={14} className="text-rose-600" />
                 <span>Ends in:</span>
                 <span className="font-mono bg-rose-600 text-white px-1.5 py-0.5 rounded text-xs font-black">
@@ -92,14 +94,14 @@ export default function FlashDeals() {
                 <button
                   onClick={() => scroll(-1)}
                   aria-label="Scroll left"
-                  className="p-2 rounded-full border border-gray-200 bg-white hover:bg-black hover:text-white transition-colors shadow-sm text-gray-700"
+                  className="p-2 rounded-full border border-gray-200 bg-transparent hover:bg-black hover:text-white transition-colors shadow-sm text-gray-700"
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <button
                   onClick={() => scroll(1)}
                   aria-label="Scroll right"
-                  className="p-2 rounded-full border border-gray-200 bg-white hover:bg-black hover:text-white transition-colors shadow-sm text-gray-700"
+                  className="p-2 rounded-full border border-gray-200 bg-transparent hover:bg-black hover:text-white transition-colors shadow-sm text-gray-700"
                 >
                   <ChevronRight size={18} />
                 </button>

@@ -98,7 +98,7 @@ export default function Shop() {
                 className="text-sm font-body bg-transparent border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-gray-200 text-gray-900"
               >
                 {sortOptions.map(o => (
-                  <option key={o.value} value={o.value} className="bg-white text-gray-900">{o.label}</option>
+                  <option key={o.value} value={o.value} className="bg-transparent text-gray-900">{o.label}</option>
                 ))}
               </select>
             </div>

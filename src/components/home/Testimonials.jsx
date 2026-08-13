@@ -42,7 +42,7 @@ const stats = [
 
 export default function Testimonials() {
   return (
-    <section className="py-12 md:py-16 bg-gray-50 border-t border-gray-100">
+    <section className="py-12 md:py-16 bg-milky-100 border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -64,7 +64,7 @@ export default function Testimonials() {
           {reviews.map((rev) => (
             <div
               key={rev.id}
-              className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition-shadow"
+              className="bg-transparent rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition-shadow"
             >
               <div>
                 {/* Stars & Date */}
@@ -100,7 +100,7 @@ export default function Testimonials() {
                   </div>
                 </div>
 
-                <div className="bg-gray-50 rounded-lg px-2.5 py-1.5 text-[11px] text-gray-600 font-medium flex items-center gap-1.5">
+                <div className="bg-milky-100 rounded-lg px-2.5 py-1.5 text-[11px] text-gray-600 font-medium flex items-center gap-1.5">
                   <Award size={12} className="text-gray-400" />
                   <span className="truncate">Bought: {rev.product}</span>
                 </div>
