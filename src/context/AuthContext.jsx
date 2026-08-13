@@ -2,9 +2,6 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'admin@admin.com';
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,13 +18,29 @@ export function AuthProvider({ children }) {
   }, []);
 
   const loginAdmin = async (email, password) => {
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      const adminUser = { email, role: 'admin', name: 'Admin' };
+    if (!email || !password) return { success: false, error: 'Invalid credentials' };
+    
+    try {
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const res = await fetch(`${baseUrl}/api/auth/admin-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Login failed' };
+      }
+      
+      const adminUser = data.user;
       setUser(adminUser);
       localStorage.setItem('glamaura_admin', JSON.stringify(adminUser));
       return { success: true };
+    } catch (err) {
+      return { success: false, error: 'Server connection failed' };
     }
-    return { success: false, error: 'Invalid admin credentials' };
   };
 
   const login = async (email, password) => {

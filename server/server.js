@@ -1,10 +1,25 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const db = require('./database.js');
 
 const app = express();
+app.use(helmet({
+  contentSecurityPolicy: false, // Since this serves a react app, you might want to configure this more carefully in production
+}));
 app.use(cors());
 app.use(express.json());
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/', apiLimiter);
 
 const PORT = process.env.PORT || 5000;
 
@@ -202,6 +217,26 @@ app.post('/api/auth/signup', async (req, res) => {
   }
 });
 
+// POST secure admin login
+app.post('/api/auth/admin-login', (req, res) => {
+  const { email, password } = req.body;
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@admin.com';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+
+  if (email === adminEmail && password === adminPassword) {
+    res.json({ 
+      message: 'Admin login successful', 
+      user: { email, role: 'admin', name: 'Admin' } 
+    });
+  } else {
+    res.status(401).json({ error: 'Invalid admin credentials' });
+  }
+});
+
 // POST secure user login
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
@@ -232,8 +267,6 @@ app.post('/api/auth/login', (req, res) => {
     }
   });
 });
-
-const path = require('path');
 
 // Serve frontend static files
 app.use(express.static(path.join(__dirname, '../dist')));
