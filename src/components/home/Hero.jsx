@@ -54,7 +54,7 @@ export default function Hero() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Banner Slider */}
-        <div className="relative h-[340px] sm:h-[420px] md:h-[480px] lg:h-[520px] w-full rounded-2xl md:rounded-3xl overflow-hidden bg-gray-900 shadow-md group">
+        <div className="relative h-[440px] sm:h-[500px] md:h-[560px] lg:h-[640px] w-full rounded-2xl md:rounded-3xl overflow-hidden bg-gray-900 shadow-md group">
           <AnimatePresence mode="wait">
             <motion.div
               key={current}
@@ -116,7 +116,7 @@ export default function Hero() {
                   >
                     <Link
                       to={heroSlides[current].link}
-                      className="inline-flex items-center gap-2 bg-transparent text-black font-bold uppercase tracking-wider text-xs sm:text-sm px-6 sm:px-8 py-3.5 rounded-full hover:bg-yellow-400 hover:text-black transition-all transform hover:scale-105 shadow-lg"
+                      className="inline-flex items-center gap-2 bg-white text-black font-bold uppercase tracking-wider text-xs sm:text-sm px-6 sm:px-8 py-3.5 rounded-full hover:bg-yellow-400 hover:text-black transition-all transform hover:scale-105 shadow-lg"
                     >
                       <span>{heroSlides[current].buttonText}</span>
                       <ArrowRight size={16} />
@@ -158,7 +158,7 @@ export default function Hero() {
                 className={`transition-all duration-300 rounded-full ${
                   current === idx
                     ? 'w-8 h-2 bg-yellow-400'
-                    : 'w-2 h-2 bg-transparent/50 hover:bg-transparent'
+                    : 'w-2 h-2 bg-white/50 hover:bg-white'
                 }`}
               />
             ))}

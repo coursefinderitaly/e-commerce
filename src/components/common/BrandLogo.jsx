@@ -170,8 +170,10 @@ export default function BrandLogo({
   const logoContent = (
     <div className={`inline-flex items-center group select-none ${className}`}>
       <div className="relative flex items-center justify-center">
-        {/* Soft Golden Glow Accent behind the Emblem */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 via-yellow-300/30 to-amber-500/20 rounded-2xl blur-lg opacity-60 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        {/* Subtle contrasting backdrop to anchor the logo on light backgrounds without washing it out */}
+        {!isDark && (
+          <div className="absolute inset-0 bg-amber-900/5 rounded-2xl blur-lg opacity-80 pointer-events-none" />
+        )}
 
         {/* The Official Transparent Gold Luxury Company Logo Emblem */}
         <picture className="relative z-10 block">
@@ -179,7 +181,7 @@ export default function BrandLogo({
           <img
             src="/logo1.png"
             alt="My Glam Aura Logo"
-            className={`${imgSizes[size]} object-contain drop-shadow-[0_2px_8px_rgba(217,119,6,0.35)] group-hover:scale-[1.04] transition-transform duration-300`}
+            className={`${imgSizes[size]} object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.65)] filter contrast-125 saturate-110 group-hover:scale-[1.04] group-hover:drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] transition-all duration-300`}
             decoding="async"
             fetchPriority="high"
           />
