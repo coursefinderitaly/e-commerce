@@ -7,10 +7,7 @@ const connectDB = async () => {
     let uri = process.env.MONGODB_URI || '';
     uri = uri.trim().replace(/^["']|["']$/g, '');
 
-    const conn = await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const conn = await mongoose.connect(uri);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     
     // Seed initial data if necessary
