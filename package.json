@@ -21,6 +21,7 @@
     "framer-motion": "^11.0.0",
     "helmet": "^8.3.0",
     "lucide-react": "^0.400.0",
+    "mongoose": "^9.9.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",

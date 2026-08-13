@@ -4,7 +4,8 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
-const db = require('./database.js');
+const { connectDB, Product, Order, User } = require('./database.js');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(helmet({
@@ -12,6 +13,9 @@ app.use(helmet({
 }));
 app.use(cors());
 app.use(express.json());
+
+// Connect to MongoDB
+connectDB();
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -23,12 +27,11 @@ app.use('/api/', apiLimiter);
 
 const PORT = process.env.PORT || 5000;
 
-// Helper function to format rows (parse JSON fields)
-const formatProduct = (row) => ({
-  ...row,
-  images: row.images ? JSON.parse(row.images) : [],
-  tags: row.tags ? JSON.parse(row.tags) : [],
-});
+// Helper function to map Mongoose document to frontend-expected format
+const formatProduct = (doc) => {
+  const obj = doc.toObject();
+  return obj;
+};
 
 // Basic Security Middleware for Admin routes
 const adminAuth = (req, res, next) => {
@@ -41,106 +44,101 @@ const adminAuth = (req, res, next) => {
 };
 
 // GET all products
-app.get('/api/products', (req, res) => {
-  db.all('SELECT * FROM products', [], (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json(rows.map(formatProduct));
-  });
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.find({});
+    res.json(products.map(formatProduct));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // GET single product
-app.get('/api/products/:id', (req, res) => {
-  db.get('SELECT * FROM products WHERE id = ?', [req.params.id], (err, row) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    if (row) {
-      res.json(formatProduct(row));
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const product = await Product.findOne({ id: req.params.id });
+    if (product) {
+      res.json(formatProduct(product));
     } else {
       res.status(404).json({ error: 'Product not found' });
     }
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // POST add a product (Secure)
-app.post('/api/products', adminAuth, (req, res) => {
-  const { id, name, description, price, originalPrice, category, stock, images, rating, reviews, featured, tags } = req.body;
-  
-  const sql = `INSERT INTO products (id, name, description, price, originalPrice, category, stock, images, rating, reviews, featured, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  const params = [
-    id, name, description, price, originalPrice || null, category, stock, 
-    JSON.stringify(images || []), rating || 4.5, reviews || 0, featured ? 1 : 0, JSON.stringify(tags || [])
-  ];
-
-  db.run(sql, params, function(err) {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
+app.post('/api/products', adminAuth, async (req, res) => {
+  try {
+    const { id, name, description, price, originalPrice, category, stock, images, rating, reviews, featured, tags } = req.body;
+    
+    await Product.create({
+      id, name, description, price, originalPrice: originalPrice || null, category, stock, 
+      images: images || [], rating: rating || 4.5, reviews: reviews || 0, featured: featured ? true : false, tags: tags || []
+    });
+    
     res.status(201).json({ message: 'Product created successfully', id });
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // PUT update a product (Secure)
-app.put('/api/products/:id', adminAuth, (req, res) => {
-  const { name, description, price, originalPrice, category, stock, images, rating, reviews, featured, tags } = req.body;
-  
-  const sql = `UPDATE products SET name = ?, description = ?, price = ?, originalPrice = ?, category = ?, stock = ?, images = ?, rating = ?, reviews = ?, featured = ?, tags = ? WHERE id = ?`;
-  const params = [
-    name, description, price, originalPrice || null, category, stock, 
-    JSON.stringify(images || []), rating, reviews, featured ? 1 : 0, JSON.stringify(tags || []), req.params.id
-  ];
-
-  db.run(sql, params, function(err) {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
+app.put('/api/products/:id', adminAuth, async (req, res) => {
+  try {
+    const { name, description, price, originalPrice, category, stock, images, rating, reviews, featured, tags } = req.body;
+    
+    const updated = await Product.findOneAndUpdate(
+      { id: req.params.id },
+      { name, description, price, originalPrice: originalPrice || null, category, stock, images: images || [], rating, reviews, featured: featured ? true : false, tags: tags || [] },
+      { new: true }
+    );
+    
+    if (updated) {
+      res.json({ message: 'Product updated successfully' });
+    } else {
+      res.status(404).json({ error: 'Product not found' });
     }
-    res.json({ message: 'Product updated successfully', changes: this.changes });
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // DELETE a product (Secure)
-app.delete('/api/products/:id', adminAuth, (req, res) => {
-  db.run('DELETE FROM products WHERE id = ?', [req.params.id], function(err) {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
+app.delete('/api/products/:id', adminAuth, async (req, res) => {
+  try {
+    const deleted = await Product.findOneAndDelete({ id: req.params.id });
+    if (deleted) {
+      res.json({ message: 'Product deleted successfully' });
+    } else {
+      res.status(404).json({ error: 'Product not found' });
     }
-    res.json({ message: 'Product deleted successfully', changes: this.changes });
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // GET all orders (Secure)
-app.get('/api/orders', adminAuth, (req, res) => {
-  db.all('SELECT * FROM orders ORDER BY created_at DESC', [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows.map(row => ({
-      ...row,
-      shipping_details: JSON.parse(row.shipping_details),
-      items: JSON.parse(row.items)
-    })));
-  });
+app.get('/api/orders', adminAuth, async (req, res) => {
+  try {
+    const orders = await Order.find({}).sort({ created_at: -1 });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // POST secure checkout order
-app.post('/api/orders', (req, res) => {
-  const { customer_email, shipping_details, items } = req.body;
-  
-  if (!items || !items.length) {
-    return res.status(400).json({ error: 'Order must contain items' });
-  }
+app.post('/api/orders', async (req, res) => {
+  try {
+    const { customer_email, shipping_details, items } = req.body;
+    
+    if (!items || !items.length) {
+      return res.status(400).json({ error: 'Order must contain items' });
+    }
 
-  // Fetch prices securely from DB to prevent tampering
-  const placeholders = items.map(() => '?').join(',');
-  const itemIds = items.map(item => item.id);
-  
-  db.all(`SELECT id, name, price FROM products WHERE id IN (${placeholders})`, itemIds, (err, dbProducts) => {
-    if (err) return res.status(500).json({ error: 'Database error' });
+    const itemIds = items.map(item => item.id);
+    const dbProducts = await Product.find({ id: { $in: itemIds } });
     
     let subtotal = 0;
     const validatedItems = [];
@@ -169,20 +167,22 @@ app.post('/api/orders', (req, res) => {
     
     const orderId = 'GA-' + Date.now().toString(36).toUpperCase();
     
-    const sql = `INSERT INTO orders (id, customer_email, shipping_details, items, subtotal, shipping_cost, tax, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-    const params = [
-      orderId, customer_email, JSON.stringify(shipping_details), JSON.stringify(validatedItems),
-      subtotal, shipping_cost, tax, total
-    ];
-
-    db.run(sql, params, function(err) {
-      if (err) return res.status(500).json({ error: err.message });
-      res.status(201).json({ message: 'Order created securely', orderId, total });
+    await Order.create({
+      id: orderId,
+      customer_email,
+      shipping_details,
+      items: validatedItems,
+      subtotal,
+      shipping_cost,
+      tax,
+      total
     });
-  });
-});
 
-const bcrypt = require('bcryptjs');
+    res.status(201).json({ message: 'Order created securely', orderId, total });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // POST secure user signup
 app.post('/api/auth/signup', async (req, res) => {
@@ -193,24 +193,26 @@ app.post('/api/auth/signup', async (req, res) => {
   }
 
   try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ error: 'Email already registered' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const userId = 'usr_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 
-    const sql = `INSERT INTO users (id, name, email, password, phone, role) VALUES (?, ?, ?, ?, ?, 'customer')`;
+    await User.create({
+      id: userId,
+      name,
+      email,
+      password: hashedPassword,
+      phone: phone || null,
+      role: 'customer'
+    });
     
-    db.run(sql, [userId, name, email, hashedPassword, phone || null], function(err) {
-      if (err) {
-        if (err.message.includes('UNIQUE constraint failed')) {
-          return res.status(409).json({ error: 'Email already registered' });
-        }
-        return res.status(500).json({ error: 'Database error' });
-      }
-      
-      // Return user object without password
-      res.status(201).json({ 
-        message: 'Account created successfully', 
-        user: { id: userId, name, email, phone, role: 'customer' } 
-      });
+    res.status(201).json({ 
+      message: 'Account created successfully', 
+      user: { id: userId, name, email, phone, role: 'customer' } 
     });
   } catch (error) {
     res.status(500).json({ error: 'Server error during signup' });
@@ -238,34 +240,32 @@ app.post('/api/auth/admin-login', (req, res) => {
 });
 
 // POST secure user login
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ error: 'Email and password are required' });
   }
 
-  db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
-    if (err) return res.status(500).json({ error: 'Database error' });
+  try {
+    const user = await User.findOne({ email });
     
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    try {
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
-
-      res.json({ 
-        message: 'Login successful', 
-        user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role } 
-      });
-    } catch (error) {
-      res.status(500).json({ error: 'Server error during login' });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
-  });
+
+    res.json({ 
+      message: 'Login successful', 
+      user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role } 
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error during login' });
+  }
 });
 
 // Serve frontend static files
