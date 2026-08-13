@@ -24,6 +24,7 @@ export default function ProductCard({ product }) {
       price: product.price,
       image: product.images?.[0] || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
       category: product.category,
+      stock: product.stock,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);

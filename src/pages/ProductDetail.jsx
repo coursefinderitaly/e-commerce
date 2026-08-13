@@ -37,7 +37,7 @@ export default function ProductDetail() {
 
   const handleAdd = () => {
     for (let i = 0; i < quantity; i++) {
-      addItem({ id: product.id, name: product.name, price: product.price, image: product.images?.[0] || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80', category: product.category });
+      addItem({ id: product.id, name: product.name, price: product.price, image: product.images?.[0] || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80', category: product.category, stock: product.stock });
     }
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
@@ -128,7 +128,7 @@ export default function ProductDetail() {
                 <div className="flex items-center border border-gray-200 rounded-lg w-fit">
                   <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-3 hover:bg-gray-100"><Minus size={16} /></button>
                   <span className="px-6 font-mono text-lg min-w-[3rem] text-center">{quantity}</span>
-                  <button onClick={() => setQuantity(q => q + 1)} className="p-3 hover:bg-gray-100"><Plus size={16} /></button>
+                  <button onClick={() => setQuantity(q => Math.min(product.stock || 1, q + 1))} className="p-3 hover:bg-gray-100"><Plus size={16} /></button>
                 </div>
               </div>
 
