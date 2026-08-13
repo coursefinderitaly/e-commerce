@@ -170,9 +170,9 @@ export default function BrandLogo({
   const logoContent = (
     <div className={`inline-flex items-center group select-none ${className}`}>
       <div className="relative flex items-center justify-center">
-        {/* Subtle contrasting backdrop to anchor the logo on light backgrounds without washing it out */}
+        {/* Premium Dark Badge to anchor the gold logo on light backgrounds */}
         {!isDark && (
-          <div className="absolute inset-0 bg-amber-900/5 rounded-2xl blur-lg opacity-80 pointer-events-none" />
+          <div className="absolute inset-[-4px] sm:inset-[-6px] bg-gray-900 border border-yellow-500/30 rounded-xl sm:rounded-2xl shadow-md pointer-events-none" />
         )}
 
         {/* The Official Transparent Gold Luxury Company Logo Emblem */}
