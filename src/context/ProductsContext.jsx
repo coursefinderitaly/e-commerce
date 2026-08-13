@@ -79,19 +79,11 @@ export function ProductsProvider({ children }) {
   };
 
   const saveProduct = async (productData, isEdit = false) => {
-    let updatedList;
-    if (isEdit) {
-      updatedList = products.map(p => String(p.id) === String(productData.id) ? { ...p, ...productData } : p);
-    } else {
-      updatedList = [productData, ...products];
-    }
-    updateProductsState(updatedList);
-
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '';
       const url = isEdit ? `${baseUrl}/api/products/${productData.id}` : `${baseUrl}/api/products`;
       const method = isEdit ? 'PUT' : 'POST';
-      await fetch(url, {
+      const response = await fetch(url, {
         method,
         headers: { 
           'Content-Type': 'application/json',
@@ -99,34 +91,66 @@ export function ProductsProvider({ children }) {
         },
         body: JSON.stringify(productData)
       });
+
+      if (!response.ok) {
+        throw new Error(`Database rejected save: ${response.status}`);
+      }
+      
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+         throw new Error('API is not running correctly. Received HTML instead of JSON.');
+      }
+
+      // ONLY update local state AFTER successful database save
+      let updatedList;
+      if (isEdit) {
+        updatedList = products.map(p => String(p.id) === String(productData.id) ? { ...p, ...productData } : p);
+      } else {
+        updatedList = [productData, ...products];
+      }
+      updateProductsState(updatedList);
+
     } catch (err) {
-      console.warn('Backend API sync notice:', err.message);
+      console.error('Backend API sync failed:', err.message);
+      throw err;
     }
   };
 
   const deleteProduct = async (productId) => {
-    const stringId = String(productId);
-    const currentDeleted = getStoredDeletedIds();
-    const newDeletedIds = Array.from(new Set([...currentDeleted, stringId]));
-    
-    setDeletedIds(newDeletedIds);
     try {
-      localStorage.setItem(DELETED_KEY, JSON.stringify(newDeletedIds));
-    } catch (e) {}
-
-    const updatedList = products.filter(p => String(p.id) !== stringId);
-    updateProductsState(updatedList);
-
-    try {
+      const stringId = String(productId);
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      await fetch(`${baseUrl}/api/products/${stringId}`, {
+      const response = await fetch(`${baseUrl}/api/products/${stringId}`, {
         method: 'DELETE',
         headers: {
           'x-admin-token': 'glamaura-secure-admin'
         }
       });
+      
+      if (!response.ok) {
+        throw new Error(`Database rejected delete: ${response.status}`);
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+         throw new Error('API is not running correctly. Received HTML instead of JSON.');
+      }
+
+      // ONLY update local state AFTER successful database delete
+      const currentDeleted = getStoredDeletedIds();
+      const newDeletedIds = Array.from(new Set([...currentDeleted, stringId]));
+      
+      setDeletedIds(newDeletedIds);
+      try {
+        localStorage.setItem(DELETED_KEY, JSON.stringify(newDeletedIds));
+      } catch (e) {}
+
+      const updatedList = products.filter(p => String(p.id) !== stringId);
+      updateProductsState(updatedList);
+
     } catch (err) {
-      console.warn('Backend API delete notice:', err.message);
+      console.error('Backend API delete failed:', err.message);
+      throw err;
     }
   };
 
