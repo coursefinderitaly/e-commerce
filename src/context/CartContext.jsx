@@ -5,17 +5,24 @@ const CartContext = createContext();
 function cartReducer(state, action) {
   switch (action.type) {
     case 'ADD_ITEM': {
+      // Prevent adding if out of stock completely
+      if (action.payload.stock !== undefined && action.payload.stock < 1) {
+        return state;
+      }
       const existing = state.items.find(
         item => item.id === action.payload.id
       );
       if (existing) {
         return {
           ...state,
-          items: state.items.map(item =>
-            item.id === action.payload.id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          ),
+          items: state.items.map(item => {
+            if (item.id === action.payload.id) {
+              // Cap at available stock
+              const maxStock = item.stock !== undefined ? item.stock : Infinity;
+              return { ...item, quantity: Math.min(item.quantity + 1, maxStock) };
+            }
+            return item;
+          }),
         };
       }
       return { ...state, items: [...state.items, { ...action.payload, quantity: 1 }] };
@@ -29,11 +36,13 @@ function cartReducer(state, action) {
       if (action.payload.quantity < 1) return state;
       return {
         ...state,
-        items: state.items.map(item =>
-          item.id === action.payload.id
-            ? { ...item, quantity: action.payload.quantity }
-            : item
-        ),
+        items: state.items.map(item => {
+          if (item.id === action.payload.id) {
+             const maxStock = item.stock !== undefined ? item.stock : Infinity;
+             return { ...item, quantity: Math.min(action.payload.quantity, maxStock) };
+          }
+          return item;
+        }),
       };
     case 'CLEAR_CART':
       return { ...state, items: [] };
