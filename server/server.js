@@ -147,7 +147,7 @@ app.put('/api/products/:id', adminAuth, async (req, res) => {
     const updated = await Product.findOneAndUpdate(
       { id: req.params.id },
       { name, description, price, originalPrice: originalPrice || null, category, stock, images: images || [], rating, reviews, featured: featured ? true : false, tags: tags || [] },
-      { new: true }
+      { returnDocument: 'after' }
     );
     
     if (updated) {
