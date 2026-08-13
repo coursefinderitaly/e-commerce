@@ -13,7 +13,7 @@ const connectDB = async () => {
     seedDatabase();
   } catch (error) {
     console.error(`Error connecting to MongoDB: ${error.message}`);
-    process.exit(1);
+    console.error('Please ensure your MONGODB_URI is correctly set in your environment variables.');
   }
 };
 
