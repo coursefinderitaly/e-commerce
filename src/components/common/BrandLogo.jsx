@@ -157,9 +157,9 @@ export default function BrandLogo({
   className = "",
   linkTo = "/",
 }) {
-  const isDark = variant === "footer" || variant === "dark";
+  const isDark = variant === "footer" || variant === "dark" || variant === "sidebar";
 
-  // Responsive image dimensions tailored to the 1.86:1 luxury emblem badge
+  // Responsive image dimensions for the ~1.82:1 brand logo emblem
   const imgSizes = {
     sm: "h-9 sm:h-10 w-auto",
     md: "h-11 sm:h-13 md:h-14 w-auto",
@@ -170,22 +170,23 @@ export default function BrandLogo({
   const logoContent = (
     <div className={`inline-flex items-center group select-none ${className}`}>
       <div className="relative flex items-center justify-center">
-        {/* Premium Dark Badge to anchor the gold logo on light backgrounds */}
-        {!isDark && (
-          <div className="absolute inset-[-4px] sm:inset-[-6px] bg-gray-900 border border-yellow-500/30 rounded-xl sm:rounded-2xl shadow-md pointer-events-none" />
-        )}
-
-        {/* The Official Transparent Gold Luxury Company Logo Emblem */}
-        <picture className="relative z-10 block">
-          <source srcSet="/logo1.webp" type="image/webp" />
-          <img
-            src="/logo1.png"
-            alt="My Glam Aura Logo"
-            className={`${imgSizes[size]} object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.65)] filter contrast-125 saturate-110 group-hover:scale-[1.04] group-hover:drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] transition-all duration-300`}
-            decoding="async"
-            fetchPriority="high"
-          />
-        </picture>
+        {/* Clean Luxury Frame Badge */}
+        <div className={`relative overflow-hidden rounded-xl transition-all duration-300 ${
+          isDark 
+            ? 'ring-1 ring-amber-400/30 shadow-md shadow-black/50' 
+            : 'ring-1 ring-amber-900/10 shadow-sm'
+        }`}>
+          <picture className="block">
+            <source srcSet="/logo1.webp" type="image/webp" />
+            <img
+              src="/logo1.png"
+              alt="My Glam Aura - Style That Defines You"
+              className={`${imgSizes[size]} object-contain group-hover:scale-[1.03] transition-transform duration-300`}
+              decoding="async"
+              fetchPriority="high"
+            />
+          </picture>
+        </div>
       </div>
     </div>
   );

@@ -10,10 +10,10 @@ export default function AnnouncementBar() {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: 'auto', opacity: 1 }}
-        exit={{ height: 0, opacity: 0 }}
-        className="bg-black text-white text-xs font-medium py-2 px-4 relative z-50 overflow-hidden"
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 50, opacity: 0 }}
+        className="fixed bottom-16 md:bottom-0 left-0 w-full bg-black text-white text-xs font-medium py-3 px-4 z-[60] shadow-[0_-4px_20px_rgba(0,0,0,0.15)]"
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex-1 text-center flex items-center justify-center gap-2">
